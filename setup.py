@@ -7,6 +7,8 @@ setup(
     install_requires=[
         'Click', 'pandas', 'lxml', 'plotly', 'requests', 'html5lib'
     ],
+
+    include_package_data=True,
     entry_points={
         'console_scripts': [
             'generatehtml = single_normal_curve:generate_from_configuration',

@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='syscourseutils',
+    name='serverlesssurvey',
     version='0.1.0',
     py_modules=['single_normal_curve'],
     install_requires=[

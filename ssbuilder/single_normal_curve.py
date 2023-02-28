@@ -11,7 +11,7 @@ import yaml
 
 
 class NormalCurveSlider():
-    def __init__(logging_vars={'location_var_name': 'loc',
+    def __init__(self,logging_vars={'location_var_name': 'loc',
                                'overlap_var_name': 'ov'}):
         self.plot_logging_js = 'plot_log_normal_curve'
         self.question_form_elements = 'form_normal_curve.html'

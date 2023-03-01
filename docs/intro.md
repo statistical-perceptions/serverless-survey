@@ -1,11 +1,7 @@
-# Welcome to your Jupyter Book
+# Statistical Perceptions Serverless Survey 
 
-This is a small sample book to give you a feel for how book content is
-structured.
-It shows off a few of the major file types, as well as some sample content.
-It does not go in-depth into any particular topic - check out [the Jupyter Book documentation](https://jupyterbook.org) for more information.
+These documents outline how to use for researchers and for potential contributors. 
 
-Check out the content pages bundled with this sample book to see more.
+ <!-- It also includes sample scripts for onboarding participants-->
 
-```{tableofcontents}
-```
+ Details that are for contributors denoted with the {fa}`code` icon, when mixed into a page with other information it will be in a dropdown. 

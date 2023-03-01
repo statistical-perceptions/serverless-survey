@@ -222,7 +222,7 @@ def set_pass_through(config_dict_list):
 
 
 @click.command()
-@click.option('--config-file')
+@click.option('-f','--config-file')
 def generate_from_configuration(config_file=None):
     '''
     Generate html files from a configuration file

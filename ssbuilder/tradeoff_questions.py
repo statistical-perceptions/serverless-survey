@@ -142,6 +142,7 @@ class TradeoffLine():
                 y_min = masked_df[y_col].min()
 
             if type(y_min) == type(None):
+
                 y_min = masked_df[y_col].min()
 
             # Add vertical lines one for each alpha

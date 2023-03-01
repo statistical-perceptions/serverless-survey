@@ -13,11 +13,11 @@ import yaml
 class NormalCurveSlider():
     def __init__(self,logging_vars={'location_var_name': 'loc',
                                'overlap_var_name': 'ov'}):
-        self.plot_logging_js = 'plot_log_normal_curve'
+        self.plot_logging_js = 'plot_log_normal_curve.js'
         self.question_form_elements = 'form_normal_curve.html'
         self.logging_vars =logging_vars
 
-    def generate_figure(static_name='other group', static_color="#CE00D1", 
+    def generate_figure(self,static_name='other group', static_color="#CE00D1", 
                             static_mean=80,static_curve_width=10,
                             dynamic_name='your group', dynamic_color="#00CED1", 
                             dynamic_starting_mean=10, dynamic_curve_width=10,
@@ -64,7 +64,7 @@ class NormalCurveSlider():
         '''
         # fill in min/max if needed
         # None evaluates to False
-        if not(min_slider_value):
+        if not(min_slider_value) :
             min_slider_value = 0
         
         if not(max_slider_value):
@@ -152,6 +152,8 @@ class NormalCurveSlider():
             xaxis_title=xaxis_title
         )
 
+        fig.update_xaxes(fixedrange=True)
+        fig.update_yaxes(fixedrange=True)
         # if hide_y_ticks:
         #     fig.update_layout(
         #         xaxis = dict(

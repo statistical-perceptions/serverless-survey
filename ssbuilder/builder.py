@@ -11,7 +11,7 @@ import yaml
 import pkg_resources as pkgrs
 
 # import plot functions here 
-from single_normal_curve import NormalCurveSlider
+from .single_normal_curve import NormalCurveSlider
 
 # add function handle and a reference name here to add new types
 figure_classes = {'NormalCurveSlider': NormalCurveSlider}
@@ -31,7 +31,8 @@ Forwards to: {next_question_url}.
 Sends: {send_vars}
 '''
 
-def make_question_page(question_id, figure_type='normal_curve_slider', figure_values=None,
+
+def make_question_page(question_id, figure_type='NormalCurveSlider', figure_values=None,
                        page_title='Normal Curve Question',
                        question_text='Move the slider',
                        confirm_message='Confirm my answer',
@@ -51,7 +52,7 @@ def make_question_page(question_id, figure_type='normal_curve_slider', figure_va
     ----------
     question_id : string {required}
         name for the question internally
-    figure : string
+    figure_type : string
          string name of valid plot type in ssbuilder
     figure_values : dictionary
         parameters to pass to plotting function
@@ -102,17 +103,13 @@ def make_question_page(question_id, figure_type='normal_curve_slider', figure_va
     if not (confirm_var_name):
         confirm_var_name = 'confirm'
 
-    if var_name_suffix:
-        confirm_var_name += '_' + question_id
-        logging_vars = {k: v + '_' + question_id for k,
-                        v in logging_vars.items()}
 
     # process figure related
-    if type (figure) == str:
+    if type(figure_type) == str:
         # set logging vars into or get from figure obj
         if not (logging_vars):
             figure_meta = figure_classes[figure_type]()
-            logging_vars = figure.logging_vars
+            logging_vars = figure_meta.logging_vars
         else:
             figure_meta = figure_classes[figure_type](logging_vars)
 
@@ -121,7 +118,12 @@ def make_question_page(question_id, figure_type='normal_curve_slider', figure_va
             figure = figure_meta.generate_figure()
         else:
             figure = figure_meta.generate_figure(**figure_values)
-        
+
+    if var_name_suffix:
+        confirm_var_name += '_' + question_id
+        logging_vars = {k: v + '_' + question_id for k,
+                        v in logging_vars.items()}
+    logging_vars['question_id'] = question_id
         
 
     # current question form elements
@@ -133,7 +135,7 @@ def make_question_page(question_id, figure_type='normal_curve_slider', figure_va
     pass_through_template = load_template_file('question_form_elements','pass_through_var.html')
     pass_through_html = [pass_through_template.format(pass_var_name= ptvar)
                                      for ptvar in pass_through_vars]
-    question_form_elements = question_form_html + '\n\n'.join(['',pass_through_html])
+    question_form_elements = question_form_html + '\n\n'.join([''] + pass_through_html)
 
     #  load and fill footer_html based on confirm/submit or next 
     footer_vars = {
@@ -143,11 +145,12 @@ def make_question_page(question_id, figure_type='normal_curve_slider', figure_va
         'skip_id': question_id + 'skip',
         'confirm_id': question_id+'confirm',
         'button_text': button_text}
-    footer_template = load_template_file() # TODO where is this set
+    footer_template = load_template_file('footer_html','footer_confirm_submit.html')  
+    # TODO make option for next? 
     footer_html = footer_template.format(**footer_vars)
 
     # logging js
-    logging_js = load_template_file('plot_logging_js',figure_meta.plot_logging_js)
+    logging_js = load_template_file('plot_logging_js',figure_meta.plot_logging_js )
     plot_logging_js = logging_js.format(**logging_vars)
 
 
@@ -181,9 +184,10 @@ def make_question_page(question_id, figure_type='normal_curve_slider', figure_va
     # this is for the user
     #    notebook exmaples print it as markdown
     #    config generator captures into a file
-    settings_vars = {'send_vars':pass_through_vars +logging_vars,
-                     'out_html_file': out_html_file}
-    return settings_message_template.format(**page_isettings_varsnfo)
+    settings_vars = {'send_vars':pass_through_vars +list(logging_vars.values()),
+                     'out_html_file': out_html_file,
+                     'next_question_url': next_question_url}
+    return settings_message_template.format(**settings_vars)
 
 def set_pass_through(config_dict_list):
     '''
@@ -202,16 +206,19 @@ def set_pass_through(config_dict_list):
         # check if its and id
         if next_question in question_ids:
             # pass through vars and confirm
-            cur_question_vars = list(conf_dt['figure_vars'].values())
+            cur_question_vars = list(conf_dt['logging_vars'].values())
             cur_confirm = conf_dt['confirm_var_name']
             cur_q_vars = [cur_confirm] + cur_question_vars
+            # add append or create passthrough vars key
             if 'pass_through_vars' in conf_qid[next_question]:
                 conf_qid[next_question]['pass_through_vars'] += cur_q_vars
             else: 
                 conf_qid[next_question]['pass_through_vars'] = ['id'] + cur_q_vars
+            # set true url 
+            conf_dt['next_question_url'] = conf_qid[next_question]['out_html_file']
 
     # return as list of dicts
-    return list(conf_qid.values)
+    return list(conf_qid.values())
 
 
 @click.command()

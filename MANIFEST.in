@@ -1,1 +1,1 @@
-recursive-include ssbuilder/assets
+recursive-include ssbuilder/assets *

@@ -12,9 +12,12 @@ import pkg_resources as pkgrs
 
 # import plot functions here 
 from .single_normal_curve import NormalCurveSlider
+from .tradeoff_questions import TradeoffBar, TradeoffLine
 
 # add function handle and a reference name here to add new types
-figure_classes = {'NormalCurveSlider': NormalCurveSlider}
+figure_classes = {'NormalCurveSlider': NormalCurveSlider,
+                  'TradeoffBar': TradeoffBar,
+                  'TradeoffLine': TradeoffLine}
 
 def load_template_file(*args):
     template_rel = os.path.join('assets', *args)
@@ -133,6 +136,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
 
     # pass through vars
     pass_through_template = load_template_file('question_form_elements','pass_through_var.html')
+    
     pass_through_html = [pass_through_template.format(pass_var_name= ptvar)
                                      for ptvar in pass_through_vars]
     question_form_elements = question_form_html + '\n\n'.join([''] + pass_through_html)
@@ -157,7 +161,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     #  fill in contents to page.thml
     # get figure html
     plot_html = figure.to_html(
-        include_plotlyjs='cdn', full_html=False, div_id=question_id)
+        include_plotlyjs='cdn', full_html=False, div_id=question_id, auto_play=False)
 
     # combine all template variables
     page_info = {'page_title': page_title,

@@ -138,7 +138,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     pass_through_template = load_template_file('question_form_elements','pass_through_var.html')
     
     pass_through_html = [pass_through_template.format(pass_var_name= ptvar)
-                                     for ptvar in pass_through_vars]
+                                     for ptvar in pass_through_vars if not(ptvar=='id')]
     question_form_elements = question_form_html + '\n\n'.join([''] + pass_through_html)
 
     #  load and fill footer_html based on confirm/submit or next 

@@ -17,7 +17,7 @@ class TradeoffBar():
                         x_col='metric', x_value1='accuracy', x_value1_hover='accurate',
                         x_value2='false_positive_rate', x_value2_hover='false positives',
                         y_col='percent', y_min=None, y_max=None, num_digits=1,
-                        color_col='group',
+                        color_col='group', color_hover= 'people',
                         disable_zoom=True):
         '''
         make the barplot
@@ -43,6 +43,8 @@ class TradeoffBar():
         num_digits : num digits to display 
         color_col: string 
             name of colum to use for the colring of the bars 
+        color_hover:
+            hover text to use for groups created by color
         disable_zoom : bool
             disable the zoom on the generated plot
         '''
@@ -53,13 +55,14 @@ class TradeoffBar():
         masked_df = df[mask1 | mask2].copy()
         masked_df['x_col_hover'] = masked_df[x_col].replace({x_value1: x_value1_hover,
                                                             x_value2: x_value2_hover})
+        masked_df['group_hover'] = color_hover
 
         fig = px.bar(masked_df, x=x_col, y=y_col, animation_frame=slider_column,  color=color_col,
-                    barmode='group', custom_data=[slider_column, color_col, 'x_col_hover']
+                    barmode='group', custom_data=[slider_column, color_col, 'x_col_hover','group_hover']
                     )
         hover_template = (slider_label + ' %{customdata[0]} <br> %{y:.'+str(num_digits)
                           +'f}% %{customdata[2]} <br>' +
-                        ' for %{customdata[1]} people<extra></extra>')
+                        ' for %{customdata[1]} %{customdata[3]}<extra></extra>')
         fig.update_traces(hovertemplate=hover_template)
 
         for frame in fig.frames:
@@ -86,10 +89,11 @@ class TradeoffLine():
     def generate_figure(self,pretty_data_file, slider_label='Model', trace_col='metric',
                         x_col='model_number', trace_value1='accuracy', trace1_hover='accurate',
                         trace_value2='false_positive_rate', trace2_hover='false positives',
-                        y_col='percent', y_min=None, y_max=None, num_digits=1,
-                        color_col='group', anchor_name='selected model',
-                        disable_zoom=True):
+                        y_col='percent', y_min=None, y_max=None, num_digits=2,
+                        color_col='group', color_hover='people', anchor_name='selected model',
+                        disable_zoom=True, default_selection=10):
             '''
+           
             make the barplot
             
             Parameters
@@ -112,30 +116,37 @@ class TradeoffLine():
                 minimum and maximum values to fix the plot axies, if none, allow plotly to decide
             num_digits : num digits to display 
             color_col: string 
-                name of colum to use for the colring of the bars 
+                name of colum to use for the colring of the lines
+            color_hover : string
+                noun to use for groups
             disable_zoom : bool
                 disable the zoom on the generated plot
-            anchor_name : name for vertical bar
+            anchor_name : string
+                name for vertical bar
+            default_selection :int
+                model that is selected when laoding
             '''
             df = pd.read_csv(pretty_data_file)
 
             mask1 = df[trace_col] == trace_value1
             mask2 = df[trace_col] == trace_value2
             masked_df = df[mask1 | mask2].copy()
-            masked_df['trace_col_hover'] = masked_df[x_col].replace({trace_value1: trace1_hover,
+            masked_df['trace_col_hover'] = masked_df[trace_col].replace({trace_value1: trace1_hover,
                                                                     trace_value2: trace2_hover})
+            masked_df['color_hover'] = color_hover
             # Create figure with secondary y-axis
             fig = make_subplots(specs=[[{"secondary_y": True}]])
 
             line_traces = px.line(masked_df, x=x_col, y=y_col, line_dash=trace_col, color=color_col,
                                 hover_name=trace_col, hover_data=[color_col],
-                                custom_data=[color_col, 'trace_col_hover']).data
+                                  custom_data=[color_col, 'trace_col_hover', 'color_hover']).data
 
             for l_trace in line_traces:
                 fig.add_trace(l_trace, secondary_y=True, )
 
-            fig.update_traces(hovertemplate=("Model %{x} <br> %{customdata[1]:."+str(num_digits) +
-                                            "f}% %{hovertext} for %{customdata[0]}"))
+            # the extra being empty suppresses the text outside the main box
+            fig.update_traces(hovertemplate=("Model %{x} <br> %{y:."+str(num_digits) +
+                             "f}% %{customdata[1]} for %{customdata[0]} %{customdata[2]}<extra></extra>"))
             
             # infer height from data 
             if type(y_min)== type(None):
@@ -145,20 +156,35 @@ class TradeoffLine():
 
                 y_min = masked_df[y_col].min()
 
+            # set number of points in vertical line to make more hover-able locations
+            N_points = 100
             # Add vertical lines one for each alpha
-            for anchor_loc in masked_df[x_col].unique():
+            for anchor_loc, df_i in masked_df.groupby(x_col):
+                # get the metrics for this model out
+                metric_df = df_i[[y_col,trace_col,color_col,'color_hover']].rename(columns={'trace_col_hover':trace_col})
+                # make renaming dictionary
+                pivot_cols = {g:' '.join([g,color_hover]) for g in metric_df[color_col].unique()}
+                # pivot, reset index to flatten heading from mulitindex and rename columns
+                metric_pivot = metric_df.pivot(index=trace_col,columns=color_col, values=y_col).reset_index().rename(
+                                columns = pivot_cols)
+                # cast to string with float formatting and replace newlines with html breaks
+                metric_tbl = metric_pivot.to_string(index=False,
+                                                     float_format=lambda f:str(np.round(f,num_digits))).replace('\n','<br>')
+                # add vertical line of a number of points, 
+                #  store meta data so that the cloation can be picked out with js in the page
                 fig.add_trace(
                     go.Scatter(
                         visible=False,
                         line=dict(color="#666666", width=6),
-                        name=anchor_name,
-                        meta={'location': str(anchor_loc)},
-                        x=[anchor_loc, anchor_loc],
-                        hovertemplate="Model %{x} ",
-                        y=[y_min, y_max]), secondary_y=False)
+                        name= anchor_name, 
+                        meta ={'location':str(anchor_loc)},
+                        x= [anchor_loc]*N_points,
+                        y=np.linspace(y_min, y_max, num=N_points),
+                        hovertemplate="<b>Model %{x}</b> <br><br>" + metric_tbl + '<extra></extra>'), 
+                    secondary_y=False)
 
             # Make 10th trace visible
-            fig.data[10].visible = True
+            fig.data[default_selection].visible = True
 
             # Create and add slider
             steps = []
@@ -175,17 +201,21 @@ class TradeoffLine():
                 steps.append(step)
 
             sliders = [dict(
-                active=10,
+                active=default_selection,
                 currentvalue={"prefix": slider_label + ":"},
                 pad={"t": 50},
                 steps=steps
             )]
 
             fig.update_layout(
-                sliders=sliders
+                sliders=sliders,
+                legend_title_text=', '.join([color_col, trace_col]).title()
             )
 
-            fig.update_xaxes(fixedrange=disable_zoom)
-            fig.update_yaxes(fixedrange=disable_zoom)
-            fig.update_yaxes(range=[y_min, y_max])
+            x_min=masked_df[x_col].min()
+            x_max=masked_df[x_col].max()
+            fig.update_xaxes(fixedrange = disable_zoom, 
+                             range = [x_min, x_max])
+            fig.update_yaxes(fixedrange=disable_zoom,
+                             range=[y_min, y_max])
             return fig

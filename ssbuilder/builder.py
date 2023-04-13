@@ -29,9 +29,9 @@ def load_template_file(*args):
 
 
 settings_message_template = ''' ---------------------------
-Created: [{out_html_file}](docs/{out_html_file})
-Forwards to: {next_question_url}.
-Sends: {send_vars}
+Created: [{out_url}/{out_html_file}]({out_url}/{out_html_file})  
+Forwards to: {next_question_url}  
+Sends: {send_vars}  
 '''
 
 
@@ -47,7 +47,9 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
                        var_name_suffix=True,
                        pretty_url=False,
                        pass_through_vars = ['id'],
-                       next_question_url='https://uri.co1.qualtrics.com/jfe/form/SV_3rU4XfDtiVN8HMW'):
+                       out_url = None,
+                       next_question_url='https://uri.co1.qualtrics.com/jfe/form/SV_3rU4XfDtiVN8HMW',
+                       debug=False):
     '''
     generate html file
     
@@ -95,7 +97,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
 
     #     ensure file name is valid
     if not (out_html_file):
-        out_html_file = question_id + '.html'
+        out_html_file = question_id.lower() + '.html'
     elif not (out_html_file[-5:] == '.html'):
         out_html_file += '.html'
 
@@ -177,9 +179,9 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     # format the final path
     if pretty_url:
         subdir = out_html_file[:-5]
-        out_html_file = os.path.join('docs', subdir, 'index.html')
+        out_html_file = os.path.join( subdir, 'index.html')
     else:
-        out_html_file = os.path.join('docs', out_html_file)
+        out_html_file = os.path.join( out_html_file)
 
     # Write the pate
     with open(out_html_file, 'w') as f:
@@ -190,44 +192,100 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     #    config generator captures into a file
     settings_vars = {'send_vars':pass_through_vars +list(logging_vars.values()),
                      'out_html_file': out_html_file,
-                     'next_question_url': next_question_url}
+                     'next_question_url': next_question_url,
+                     'out_url':out_url}
     return settings_message_template.format(**settings_vars)
 
 def set_pass_through(config_dict_list):
     '''
     set the pass_through_vars values 
+
+    Parameters
+    ----------
+    config_dict_list : dictionary
+        dictionary with parameters of the page builder as keys
     '''
-    # se question_id as index 
+    # set question_id as keys for better indexing
     conf_qid = {d['question_id']: d for d in config_dict_list}
     
     question_ids = [d['question_id'] for d in config_dict_list]
 
-    # iterate over list, checking all, to handle skips or cases with none
-    for conf_dt in  config_dict_list:
+    q_traverse_order = []
+    # iterate over list in order, produce traversal order
+    for q_id in question_ids:
+
         # get next q target
-        next_question = conf_dt['next_question_url']
+        next_question = conf_qid[q_id]['next_question_url']
+
+        # if this has not bee seen yet
+        if not (q_id in q_traverse_order):
+            if next_question in q_traverse_order:
+                # if next q is in then 
+                nq_idx = q_traverse_order.index(next_question)
+                q_traverse_order.insert(nq_idx, q_id)
+            else:
+                # put this question in the list
+                q_traverse_order.append(q_id)
+                
+
 
         # check if its and id
+        while next_question in question_ids and not(next_question in q_traverse_order):
+            # append this
+            q_traverse_order.append(next_question)
+            #  traverse to the next
+            next_question = conf_qid[next_question]['next_question_url']
+
+    # iterate over list, checking all, to handle skips or cases with none
+    for q_id in q_traverse_order:
+        # get next q target
+        next_question = conf_qid[q_id]['next_question_url']
+
+        # check if its an id
         if next_question in question_ids:
-            # pass through vars and confirm
-            cur_question_vars = list(conf_dt['logging_vars'].values())
-            cur_confirm = conf_dt['confirm_var_name']
+            # extract pass through vars and confirm
+            cur_question_vars = list(conf_qid[q_id]['logging_vars'].values())
+            cur_confirm = conf_qid[q_id]['confirm_var_name']
+            # var_name_suffix is defaulted to True in the make page, so same behavior here
+            #  if not passed at all or manually set to true
+            if not ('var_name_suffix' in conf_qid[q_id].keys()) or conf_qid[q_id]['var_name_suffix']:
+                cur_confirm += '_' + conf_qid[q_id]['question_id'].lower()
+                cur_question_vars = [qv + '_' + conf_qid[q_id]['question_id'].lower()
+                                     for qv in cur_question_vars]
             cur_q_vars = [cur_confirm] + cur_question_vars
+            # append current pass throughs if they exist
+            if 'pass_through_vars' in conf_qid[q_id]:
+                cur_q_vars += conf_qid[q_id]['pass_through_vars'][1:]
             # add append or create passthrough vars key
             if 'pass_through_vars' in conf_qid[next_question]:
                 conf_qid[next_question]['pass_through_vars'] += cur_q_vars
             else: 
                 conf_qid[next_question]['pass_through_vars'] = ['id'] + cur_q_vars
             # set true url 
-            conf_dt['next_question_url'] = conf_qid[next_question]['out_html_file']
+            if 'out_html_file' in conf_qid[next_question].keys():
+                conf_qid[q_id]['next_question_url'] = conf_qid[next_question]['out_html_file']
+            else:
+                conf_qid[q_id]['next_question_url'] = conf_qid[next_question]['question_id'].lower() + '.html'
 
     # return as list of dicts
     return list(conf_qid.values())
 
+def link_question(q_config_dict):
+    '''
+    take a single config dictionary and update
+    '''
+    # TODO: not recursive, but needs to traverse, then order, then update in order, propagting through to the end
+
 
 @click.command()
 @click.option('-f','--config-file')
-def generate_from_configuration(config_file=None):
+@click.option('-r','--repo_name')
+@click.option('-o','--gh_org')
+@click.option('-d','--debug',is_flag=True)
+              
+def generate_from_configuration(config_file=None,repo_name=None,
+                                gh_org=None,out_url=None,
+                                debug=False):
     '''
     Generate html files from a configuration file
 
@@ -235,9 +293,23 @@ def generate_from_configuration(config_file=None):
     ----------
     config_file : string or None
         file name, if none, configureation.yml assumed
-    
-    
+    repo_name : string {None}
+        name of the repo
+    gh_org : string {None}
+        name of the gh org or user that owns the repo to build the URL
+    debug : bool
+        print debuggin information or not
     '''
+    # create url from repo and org if not passed
+    if not(out_url):
+        out_url = ''
+        if gh_org:
+            out_url = 'https://' +gh_org + '.github.io/'
+
+        if repo_name:
+            out_url += repo_name 
+        
+
     # set file names
     if not (config_file):
         config_file = 'configuration.yml'
@@ -252,7 +324,7 @@ def generate_from_configuration(config_file=None):
     # parse for pass through vars for sequential questions
     parsed_config = set_pass_through(loaded_config)
     # generate all of the files and save the instructions
-    instructions = [make_question_page(**q) for q in parsed_config]
+    instructions = [make_question_page(**q,out_url=out_url,debug=debug) for q in parsed_config]
     #  save instructions
     with open(instruction_file, 'w') as f:
         f.write('\n'.join(instructions))

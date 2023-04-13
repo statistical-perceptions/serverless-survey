@@ -47,6 +47,12 @@ class TradeoffBar():
             hover text to use for groups created by color
         disable_zoom : bool
             disable the zoom on the generated plot
+
+        Returns
+        -------
+        fig : plotly figure object
+        figure object based on parameters
+
         '''
         df = pd.read_csv(pretty_data_file)
 
@@ -94,7 +100,7 @@ class TradeoffLine():
                         disable_zoom=True, default_selection=10):
             '''
            
-            make the barplot
+            make the lineplot
             
             Parameters
             ----------
@@ -125,6 +131,12 @@ class TradeoffLine():
                 name for vertical bar
             default_selection :int
                 model that is selected when laoding
+
+            Returns
+            -------
+            fig : plotly figure object
+            figure object based on parameters
+
             '''
             df = pd.read_csv(pretty_data_file)
 
@@ -137,10 +149,12 @@ class TradeoffLine():
             # Create figure with secondary y-axis
             fig = make_subplots(specs=[[{"secondary_y": True}]])
 
+            # create lines with custom data that can be used in the hover text
             line_traces = px.line(masked_df, x=x_col, y=y_col, line_dash=trace_col, color=color_col,
                                 hover_name=trace_col, hover_data=[color_col],
                                   custom_data=[color_col, 'trace_col_hover', 'color_hover']).data
-
+            
+            # addthe line data as traces to teh figure on the secondary y axis (to allow different sets)
             for l_trace in line_traces:
                 fig.add_trace(l_trace, secondary_y=True, )
 

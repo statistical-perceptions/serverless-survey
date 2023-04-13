@@ -56,6 +56,13 @@ class NormalCurveSlider():
             positive to the right of the decimal, negative for left of decimal (eg -2 rounds to nearest 100)
         xaxis_title : string 
             text label for the x axis
+
+        Returns
+        -------
+        fig : plotly figure object
+            figure object based on parameters
+
+            
         Notes: 
         ------
         curve is drawn with scipy.norm 

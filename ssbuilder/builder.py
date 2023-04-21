@@ -42,6 +42,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
                        skip_message='Prefer not to answer',
                        button_text='Submit',
                        out_html_file=None,
+                       out_rel_path = None,
                        logging_vars=None,
                        confirm_var_name=None,
                        var_name_suffix=True,
@@ -74,6 +75,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     out_html_file : string
         name fo the html file, that will be in the url for the participant 
         if not passed will add ".html" to the questionid
+    out_rel_path : string or file buffer
+        where to write the files. 
     logging_vars : dictionary
         dictionary of names for the variable types the specific question requires 
     confirm_var_name : string {'confirm'}
@@ -87,7 +90,6 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
         question id or url for the qualtrics question
     pretty_url : boolean {False}
         if True make pages like `/IndentiCurve/name/` instead of `/IdentiCurve/name.html` 
-        
     Notes
     -----
     variables with _var_name + "id" will be passed to qualtrics
@@ -179,12 +181,18 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     # format the final path
     if pretty_url:
         subdir = out_html_file[:-5]
-        out_html_file = os.path.join( subdir, 'index.html')
+        out_html_file = os.path.join(subdir, 'index.html')
     else:
-        out_html_file = os.path.join( out_html_file)
+        out_html_file = os.path.join(out_html_file)
 
-    # Write the pate
-    with open(out_html_file, 'w') as f:
+    # prepend out directory if provded
+    if out_rel_path:
+        out_path = os.path.join(out_rel_path, out_html_file)
+    else:
+        out_path = out_html_file
+
+    # Write the page
+    with open(out_path, 'w') as f:
         f.write(page_html)
 
     # this is for the user
@@ -279,13 +287,14 @@ def link_question(q_config_dict):
 
 @click.command()
 @click.option('-f','--config-file')
+@click.option('-p', '--out_rel_path')
 @click.option('-r','--repo_name')
 @click.option('-o','--gh_org')
 @click.option('-d','--debug',is_flag=True)
               
 def generate_from_configuration(config_file=None,repo_name=None,
                                 gh_org=None,out_url=None,
-                                debug=False):
+                                debug=False, out_rel_path=''):
     '''
     Generate html files from a configuration file
 
@@ -324,7 +333,8 @@ def generate_from_configuration(config_file=None,repo_name=None,
     # parse for pass through vars for sequential questions
     parsed_config = set_pass_through(loaded_config)
     # generate all of the files and save the instructions
-    instructions = [make_question_page(**q,out_url=out_url,debug=debug) for q in parsed_config]
+    instructions = [make_question_page(
+        **q, out_url=out_url, out_rel_path=out_rel_path, debug=debug) for q in parsed_config]
     #  save instructions
     with open(instruction_file, 'w') as f:
         f.write('\n'.join(instructions))

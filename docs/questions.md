@@ -25,6 +25,8 @@ This question has two normal curves, one moves and one does not.
 
 this quesiton typ trades off between two two extremes over a number of models in the middle
 
+<!-- example comment -->
+
 
 ```{eval-rst}
 .. autoclass:: ssbuilder.TradeoffLine

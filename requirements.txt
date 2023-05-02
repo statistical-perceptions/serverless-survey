@@ -1,5 +1,12 @@
 plotly
 numpy
 pandas
+seaborn
 scipy
 pyyaml
+jupyter-book
+matplotlib
+pyppeteer
+lxml
+sphinx-panels
+git+https://github.com/brownsarahm/sphinxcontrib-mermaid@cdnupdate

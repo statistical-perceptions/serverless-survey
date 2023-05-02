@@ -23,12 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install -r requirements.txt
-
-    - name: find file list
-      run: |
-        pip install git+https://github.com/introcompsys/courseutils@main
-        kwlcsv .
-
+        
     # Build book
     - name: Build the pdf manual
       run: |

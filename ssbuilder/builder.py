@@ -51,7 +51,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
                        pass_through_vars = ['id'],
                        out_url = None,
                        next_question_url='https://uri.co1.qualtrics.com/jfe/form/SV_3rU4XfDtiVN8HMW',
-                       debug=False):
+                       debug=False,
+                       full_html=True):
     '''
     generate html file
     
@@ -91,6 +92,12 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
         question id or url for the qualtrics question
     pretty_url : boolean {False}
         if True make pages like `/IndentiCurve/name/` instead of `/IdentiCurve/name.html` 
+    full_html : boolean {True}
+        generate a full html page or if False, generate only a segment of the page (eg for combining or embedding)
+    
+    Returns
+    -------
+    
     Notes
     -----
     variables with _var_name + "id" will be passed to qualtrics
@@ -176,7 +183,13 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
                  'plot_html': plot_html,
                  'footer_html':footer_html,
                  'plot_logging_js': plot_logging_js}
-    page_template = load_template_file('page.html')
+    
+    if full_html:
+        page_template = load_template_file('page.html')
+    else:
+        page_template = load_template_file('fragment.html')
+        page_info['page_title'] = out_html_file[:-5]
+
     page_html = page_template.format(**page_info)
 
     # format the final path
@@ -285,6 +298,16 @@ def link_question(q_config_dict):
     '''
     # TODO: not recursive, but needs to traverse, then order, then update in order, propagting through to the end
 
+def get_file_name(question_dict):
+    '''
+    get the file name for a question from its dictionary
+    '''
+    if not('out_html_file' in question_dict.keys()):
+        out_html_file = question_dict['question_id'].lower() + '.html'
+    elif not (question_dict['out_html_file'][-5:] == '.html'):
+        out_html_file = question_dict['out_html_file']+ '.html'
+    
+    return out_html_file
 
 @click.command()
 @click.option('-f','--config-file')
@@ -292,10 +315,13 @@ def link_question(q_config_dict):
 @click.option('-r','--repo_name')
 @click.option('-o','--gh_org')
 @click.option('-d','--debug',is_flag=True)
+@click.option('--fragment',is_flag=True)
+@click.option('-a','--all_in_one',is_flag=True)
               
 def generate_from_configuration(config_file=None,repo_name=None,
                                 gh_org=None,out_url=None,
-                                debug=False, out_rel_path=''):
+                                debug=False, out_rel_path='',
+                                fragment=False,all_in_one=False):
     '''
     Generate html files from a configuration file
 
@@ -309,6 +335,10 @@ def generate_from_configuration(config_file=None,repo_name=None,
         name of the gh org or user that owns the repo to build the URL
     debug : bool
         print debuggin information or not
+    fragment : bool
+        generate a fragment or not
+    all_in_one : bool
+        merge files to a single htmlfile
     '''
     # create url from repo and org if not passed
     if not(out_url):
@@ -318,7 +348,9 @@ def generate_from_configuration(config_file=None,repo_name=None,
 
         if repo_name:
             out_url += repo_name 
-        
+    
+    if all_in_one:
+        fragment=True
 
     # set file names
     if not (config_file):
@@ -327,15 +359,55 @@ def generate_from_configuration(config_file=None,repo_name=None,
     else:
         instruction_file = config_file[:-4] + '-instructions.md'
 
-    # load and parse the configurations
+    # --------------  load and parse the configurations
     with open(config_file, 'r') as f:
         loaded_config = yaml.load(f, Loader=yaml.Loader)
+
+    if 'shared' in loaded_config.keys():
+        question_template = loaded_config['shared']
+        question_unique = loaded_config['unique']
+
+        # find nested parameters
+        nested_parameters = [k for k,v in question_template.items() if type(v)==dict]
+
+        # make copies of template for each real question
+        full_config = [question_template.copy() for q in question_unique]
+
+        # update each nested var
+        for fc_i,q_i in zip(full_config,question_unique):
+            # update the nested values first
+            for nest_param in nested_parameters:
+                if nest_param in q_i:
+                    fc_i[nest_param].update(q_i[nest_param])
+                    # remove from q after new values are inserted
+                    del q_i[nest_param]
+            
+            # update  remaining parameters
+            fc_i.update(q_i)
+    else: 
+        full_config = loaded_config
     
     # parse for pass through vars for sequential questions
-    parsed_config = set_pass_through(loaded_config)
-    # generate all of the files and save the instructions
+    parsed_config = set_pass_through(full_config)
+
+
+
+    # -------------- generate all of the files and save the instructions
     instructions = [make_question_page(
-        **q, out_url=out_url, out_rel_path=out_rel_path, debug=debug) for q in parsed_config]
+        **q, out_url=out_url, out_rel_path=out_rel_path, debug=debug,full_html=not(fragment)) for q in parsed_config]
     #  save instructions
     with open(instruction_file, 'w') as f:
         f.write('\n'.join(instructions))
+
+    # merge if appropriate
+    if all_in_one:
+        # extract file names
+        file_list = [get_file_name(q) for q in parsed_config]
+        page = load_template_file('page_header.html').format(study_name = repo_name)
+        for file_name in file_list:
+            with open(os.path.join(out_rel_path,file_name),'r') as f:
+                page +=f.read()
+        page += load_template_file('page_footer.html')
+
+        with open(os.path.join(out_rel_path, repo_name+'-aio.html'),'w') as f:
+            f.write(page)

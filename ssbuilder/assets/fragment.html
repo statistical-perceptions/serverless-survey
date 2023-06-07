@@ -1,0 +1,38 @@
+<h1>{page_title}</h1>
+
+    <form action="{next_question_url}" method="GET">
+        <div>
+            <!-- hidden field for ID to pass on-->
+            <input name="id" id="id" type="hidden" value="demo" />
+        </div>
+
+        <!-- this is configured by the question types and if chaining multiple or not -->
+        {question_form_elements}
+
+        <!-- the card wraps the question -->
+        <div class="card text-center w-75 mx-auto my-5">
+            <div class="card-header">
+                <!-- this comes from the config file directly -->
+                {question_text}
+            </div>
+            <div class="card-body">
+                <!--  this comes from plotly  -->
+                {plot_html}
+                <!-- --------------------------------------------------------------- -->
+                <!--  end plotly   -->
+            </div>
+            <div class="card-footer text-muted">
+                <!-- this is configured and comes from a template in assest/footer_html -->
+                {footer_html}
+            </div>
+        </div>
+    </form>
+    <script>
+        // prefill id from URL with incoming
+        (new URL(window.location.href)).searchParams.forEach((x, y) =>
+            document.getElementById(y).value = x);
+
+        // plot type specific js from a plot_log_<plt tpe>.js file
+        {plot_logging_js}
+
+    </script>

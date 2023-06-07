@@ -27,57 +27,42 @@ All questions must have certain parameters:
 the `question_text` can include markdown formatting which will be rendered with the [markdown](https://pypi.org/project/Markdown/) package
 
 ```{code-cell} ipython3
+:tags: ["remove-input"]
 import ssbuilder
-import markdown
-```
-
-```{code-cell} ipython3
-ex_obj = ssbuilder.NormalCurveSlider()
-```
-
-```{code-cell} ipython3
-ds_lines = [l.strip() for l in ex_obj.generate_figure.__doc__.split('\n')]
-param_start = ds_lines.index('Parameters') +2
-param_end = ds_lines.index('Returns')
-
-param_lines = ds_lines[param_start:param_end]
-
-
-
-varify = lambda s: '`' + s + '`'
-process_line = {True: lambda l: '- ' + ' '.join([varify(l.split(' ')[0])]+ l.split( )[1:]),
-               False: lambda l: '  ' + l}
-[process_line[' : ' in l ](l) for l in param_lines]
-
-print('\n'.join([process_line[' : ' in l ](l) for l in param_lines]))
+# import markdown
+from IPython.display import Markdown
 ```
 
 ## Normal Curve Questions
 
 This question has two normal curves, one moves and one does not. 
-```{eval-rst}
-.. autoclass:: ssbuilder.a
 
-  :members:
+Use `figure_type: NormalCurveSlider` with the following parameters in `figure_values`
+```{code-cell} ipython3
+:tags: ["remove-input"]
+Markdown(ssbuilder.md_params(ssbuilder.NormalCurveSlider().generate_figure))
 ```
-
-+++
 
 ## Trade Off Questions
 
-this quesiton typ trades off between two two extremes over a number of models in the middle
-
-<!-- example comment -->
 
 
-```{eval-rst}
-.. autoclass:: ssbuilder.TradeoffLine
-  :members:
+this question type trades off between two two extremes over a number of models in the middle
+
+### Line Graph
+
+Use `figure_type: TradeoffLine` with the following parameters for use in `figure_values`:
+```{code-cell} ipython3
+:tags: ["remove-input"]
+Markdown(ssbuilder.md_params(ssbuilder.TradeoffLine().generate_figure))
+```
+<!-- edit in docstring -->
+### Bar Graph
+
+Use `figure_type: TradeoffBar` with the following parameters for use in `figure_values`
+
+```{code-cell} ipython3
+:tags: ["remove-input"]
+Markdown(ssbuilder.md_params(ssbuilder.TradeoffBar().generate_figure))
 ```
 
-```{eval-rst}
-.. autoclass:: ssbuilder.TradeoffBar
-  :members:
-```
-
-##

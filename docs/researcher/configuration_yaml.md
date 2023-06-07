@@ -1,15 +1,27 @@
+---
+jupytext:
+  formats: md:myst
+  text_representation:
+    extension: .md
+    format_name: myst
+    format_version: 0.13
+    jupytext_version: 1.14.1
+kernelspec:
+  display_name: Python 3
+  language: python
+  name: python3
+---
+
 # Working with Configuration Files
 
 A configuration file is yaml
 
 
-## Configuring your study 
+## How YAML works 
 
-To configure the study you will need the urls to each follow-up survey. They do not have to be fully configured first though. 
 
-### Editing on GitHub.com
+### No shared parameters 
 
-If you do not want to run the code locally you can instead edit configuration file here only. 
 
 This file is setup like: 
 ```
@@ -37,21 +49,72 @@ Notes:
 - the variables can be in any order
 - `question_id` must be stated, there is no default value for it 
 - only the first variable for each question gets a `-`
-- `name_of_var3_for_q2` is an example of how to format a long variable if you do not leave it on a single line. 
+- `name_of_var3_for_q2` is an example of how to format a long value if you do not leave it on a single line. 
 
 Some come from the question and others are for the pate
 
-## Page level  Settings
+### No shared parameters 
 
-```{eval-rst}
-.. autoclass:: ssbuilder.builder.make_question_page
-  :members:
+To share values across question it can be set up like
+```
+shared: 
+  name_of_var1_shared: value_for_var1_shared
+  name_of_var2_shared: value_for_var2_shared
+  figure_values:
+    name_of_fig_var2_shared: value_for_fig_var2_shared
+unique: 
+- question_id: unique_id_for_q1
+  name_of_var4_for_q1: value_for_var4_q1
+  figure_values:
+    name_of_fig_var1_for_q1: value_for_fig_var1_for_q1
+- question_id: unique_id_for_q2
+  name_of_var4_for_q2: value_for_var4_q2
+  figure_values:
+    name_of_fig_var1_for_q2: value_for_fig_var1_for_q2
 ```
 
-## Building from config
+This is equivalent to (but, for many questions,  more compact than)
 
-```{eval-rst}
-.. autoclass:: ssbuilder.generate_from_configuration
-  :members:
+```
+- question_id: unique_id_for_q1
+  name_of_var4_for_q1: value_for_var4_q1
+  name_of_var1_shared: value_for_var1_shared
+  name_of_var2_shared: value_for_var2_shared
+  figure_values:
+    name_of_fig_var2_shared: value_for_fig_var2_shared
+    name_of_fig_var1_for_q1: value_for_fig_var1_for_q1
+- question_id: unique_id_for_q2
+  name_of_var4_for_q2: value_for_var4_q2
+  name_of_var1_shared: value_for_var1_shared
+  name_of_var2_shared: value_for_var2_shared
+  figure_values:
+    name_of_fig_var2_shared: value_for_fig_var2_shared
+    name_of_fig_var1_for_q2: value_for_fig_var1_for_q2
+```
+
+## Configuring your study 
+
+To configure the study you will need the urls to each follow-up survey. They do not have to be fully configured first though. 
+
+### Page level  Settings
+
+```{code-cell} ipython3
+:tags: ["remove-input"]
+import ssbuilder
+# import markdown
+from IPython.display import Markdown
+
+Markdown(ssbuilder.md_params(ssbuilder.builder.make_question_page))
+```
+
+### Figure specific Settings
+
+These settings vary by question type and the options are detailed on [](questions.md)
+
+## Building Level Options
+
+```{code-cell} ipython3
+%%bash
+ssgeneratehtml --help
 ```
 

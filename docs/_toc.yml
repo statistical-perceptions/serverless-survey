@@ -3,7 +3,14 @@
 
 format: jb-book
 root: intro
-chapters:
-- file: questions
-- file: configuration_yaml
-- file: qualtrics
+parts:
+  - caption: For Researchers
+    chapters:
+    - file: researcher/questions
+    - file: researcher/configuration_yaml
+    - file: researcher/qualtrics
+parts:
+  - caption: For Developers
+    chapters:
+    - file: dev/question
+    - file: dev/configuration 

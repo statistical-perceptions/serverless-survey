@@ -1,4 +1,4 @@
-# Creating A Configuration File
+# Working with Configuration Files
 
 A configuration file is yaml
 
@@ -41,7 +41,7 @@ Notes:
 
 Some come from the question and others are for the pate
 
-## Page level 
+## Page level  Settings
 
 ```{eval-rst}
 .. autoclass:: ssbuilder.builder.make_question_page

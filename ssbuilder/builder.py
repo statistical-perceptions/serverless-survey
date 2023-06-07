@@ -7,6 +7,7 @@ import numpy as np
 from scipy.stats import norm
 import click
 import yaml
+import markdown
 
 import pkg_resources as pkgrs
 
@@ -171,7 +172,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     page_info = {'page_title': page_title,
                  'next_question_url': next_question_url,
                  'question_form_elements': question_form_elements,
-                 'question_text': question_text,
+                 'question_text': markdown.markdown(question_text),
                  'plot_html': plot_html,
                  'footer_html':footer_html,
                  'plot_logging_js': plot_logging_js}

@@ -96,7 +96,11 @@ This is equivalent to (but, for many questions,  more compact than)
 
 To configure the study you will need the urls to each follow-up survey. They do not have to be fully configured first though. 
 
+Each question is a single page with a figure on it. 
+
 ### Page level  Settings
+
+These settings control the rest of the question page, other than the figure. 
 
 ```{code-cell} ipython3
 :tags: ["remove-input"]
@@ -107,12 +111,19 @@ from IPython.display import Markdown
 Markdown(ssbuilder.md_params(ssbuilder.builder.make_question_page))
 ```
 
+```{warning}
+You cannot use `end` as a question ID, or `end.html` as an output file name
+```
+
 ### Figure specific Settings
 
 These settings vary by question type and the options are detailed on [](questions.md)
 
-## Building Level Options
+## Build Level Options
 
+Serverless Survey has some settings that are for a whole study or about how to process the configuration file. 
+
+These are set as CLI arguments if you build offline.  If you use our template repo, you will have a set of options for these controls in your actions tab.  
 ```{code-cell} ipython3
 %%bash
 ssgeneratehtml --help

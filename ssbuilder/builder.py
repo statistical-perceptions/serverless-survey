@@ -50,7 +50,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
                        pretty_url=False,
                        pass_through_vars = ['id'],
                        out_url = None,
-                       next_question_url='https://uri.co1.qualtrics.com/jfe/form/SV_3rU4XfDtiVN8HMW',
+                       next_question_url=None,
                        debug=False,
                        full_html=True):
     '''
@@ -88,7 +88,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
         can be changed to False if you specify the variable names directly
     pass_through_vars : list of strings ['id']
         list of variables to pass through from previous to next
-    next_question : string
+    next_question_url : string
         question id or url for the qualtrics question
     pretty_url : boolean {False}
         if True make pages like `/IndentiCurve/name/` instead of `/IdentiCurve/name.html` 
@@ -118,7 +118,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     if not (confirm_var_name):
         confirm_var_name = 'confirm'
 
-
+    
     # process figure related
     if type(figure_type) == str:
         # set logging vars into or get from figure obj
@@ -175,7 +175,10 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     plot_html = figure.to_html(
         include_plotlyjs='cdn', full_html=False, div_id=question_id, auto_play=False)
 
-    # combine all template variables
+    
+    
+    
+    # combine all template variables for overall page
     page_info = {'page_title': page_title,
                  'next_question_url': next_question_url,
                  'question_form_elements': question_form_elements,
@@ -227,6 +230,7 @@ def set_pass_through(config_dict_list):
     config_dict_list : dictionary
         dictionary with parameters of the page builder as keys
     '''
+    # note in this function we rely on that dictionaries are not copied
     # set question_id as keys for better indexing
     conf_qid = {d['question_id']: d for d in config_dict_list}
     
@@ -236,27 +240,30 @@ def set_pass_through(config_dict_list):
     # iterate over list in order, produce traversal order
     for q_id in question_ids:
 
-        # get next q target
-        next_question = conf_qid[q_id]['next_question_url']
+        if 'next_question_url' in conf_qid[q_id]:
+            # get next q target
+            next_question = conf_qid[q_id]['next_question_url']
 
-        # if this has not bee seen yet
-        if not (q_id in q_traverse_order):
-            if next_question in q_traverse_order:
-                # if next q is in then 
-                nq_idx = q_traverse_order.index(next_question)
-                q_traverse_order.insert(nq_idx, q_id)
-            else:
-                # put this question in the list
-                q_traverse_order.append(q_id)
-                
+            # if this has not bee seen yet
+            if not (q_id in q_traverse_order):
+                if next_question in q_traverse_order:
+                    # if next q is in then 
+                    nq_idx = q_traverse_order.index(next_question)
+                    q_traverse_order.insert(nq_idx, q_id)
+                else:
+                    # put this question in the list
+                    q_traverse_order.append(q_id)
+                    
 
 
-        # check if its and id
-        while next_question in question_ids and not(next_question in q_traverse_order):
-            # append this
-            q_traverse_order.append(next_question)
-            #  traverse to the next
-            next_question = conf_qid[next_question]['next_question_url']
+            # check if its and id
+            while next_question in question_ids and not(next_question in q_traverse_order):
+                # append this
+                q_traverse_order.append(next_question)
+                #  traverse to the next
+                next_question = conf_qid[next_question]['next_question_url']
+        else:
+            conf_qid[q_id]['next_question_url'] = 'end.html'
 
     # iterate over list, checking all, to handle skips or cases with none
     for q_id in q_traverse_order:
@@ -331,10 +338,14 @@ def generate_from_configuration(config_file=None,repo_name=None,
         file name, if none, configureation.yml assumed
     repo_name : string {None}
         name of the repo
+    out_url : string {None}
+        specify if not github with org/repo
     gh_org : string {None}
         name of the gh org or user that owns the repo to build the URL
     debug : bool
         print debuggin information or not
+    out_rel_path : string
+        relative path where to save the html files 
     fragment : bool
         generate a fragment or not
     all_in_one : bool
@@ -363,6 +374,7 @@ def generate_from_configuration(config_file=None,repo_name=None,
     with open(config_file, 'r') as f:
         loaded_config = yaml.load(f, Loader=yaml.Loader)
 
+    # process shared params if provided
     if 'shared' in loaded_config.keys():
         question_template = loaded_config['shared']
         question_unique = loaded_config['unique']
@@ -385,12 +397,11 @@ def generate_from_configuration(config_file=None,repo_name=None,
             # update  remaining parameters
             fc_i.update(q_i)
     else: 
+        # pass as is
         full_config = loaded_config
     
     # parse for pass through vars for sequential questions
     parsed_config = set_pass_through(full_config)
-
-
 
     # -------------- generate all of the files and save the instructions
     instructions = [make_question_page(
@@ -399,15 +410,22 @@ def generate_from_configuration(config_file=None,repo_name=None,
     with open(instruction_file, 'w') as f:
         f.write('\n'.join(instructions))
 
+    next_url_list = question_ids = [d['next_question_url'] for d in full_config]
+    if 'end.html' in next_url_list:
+        end_html = load_template_file('end.html')
+        with open(os.path.join(out_rel_path,file_name),'w') as f:
+            f.write(end_html)
+         
+
     # merge if appropriate
     if all_in_one:
         # extract file names
         file_list = [get_file_name(q) for q in parsed_config]
-        page = load_template_file('page_header.html').format(study_name = repo_name)
+        page = load_template_file('aio_header.html').format(study_name = repo_name)
         for file_name in file_list:
             with open(os.path.join(out_rel_path,file_name),'r') as f:
                 page +=f.read()
-        page += load_template_file('page_footer.html')
+        page += load_template_file('aio_footer.html')
 
-        with open(os.path.join(out_rel_path, repo_name+'-aio.html'),'w') as f:
+        with open(os.path.join(out_rel_path, 'aio.html'),'w') as f:
             f.write(page)

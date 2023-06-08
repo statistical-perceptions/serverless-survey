@@ -25,3 +25,5 @@ It is maintained by members of the Boykin Lab and the [URI ML4STS lab](https://g
 Statistical Perceptions, for our joint project. 
 
 You may request features or report bugs on the issues tab.  These will be triaged, but development will remain driven by our research goals, however collaboration and contributions are welcome and we will review PRs accordingly. 
+
+[sstemplate]:https://github.com/statistical-perceptions/ss-template

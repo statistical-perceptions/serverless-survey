@@ -1,5 +1,3 @@
-
-
 # Coordinating with Qualtrics 
 
 

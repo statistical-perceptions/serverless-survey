@@ -4,6 +4,7 @@ pandas
 seaborn
 scipy
 pyyaml
+markdown
 jupyter-book
 matplotlib
 pyppeteer

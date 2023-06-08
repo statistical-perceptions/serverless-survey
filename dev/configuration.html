@@ -327,9 +327,48 @@ document.write(`
 <h1>Configuration Details<a class="headerlink" href="#configuration-details" title="Permalink to this headline">#</a></h1>
 <section id="page-level">
 <h2>Page level<a class="headerlink" href="#page-level" title="Permalink to this headline">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="ssbuilder.builder.make_question_page">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ssbuilder.builder.</span></span><span class="sig-name descname"><span class="pre">make_question_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">question_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figure_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NormalCurveSlider'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figure_values</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">page_title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Normal</span> <span class="pre">Curve</span> <span class="pre">Question'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">question_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Move</span> <span class="pre">the</span> <span class="pre">slider'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confirm_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Confirm</span> <span class="pre">my</span> <span class="pre">answer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skip_message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Prefer</span> <span class="pre">not</span> <span class="pre">to</span> <span class="pre">answer'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">button_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Submit'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_html_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_rel_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logging_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confirm_var_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_name_suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pretty_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pass_through_vars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['id']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">next_question_url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'https://uri.co1.qualtrics.com/jfe/form/SV_3rU4XfDtiVN8HMW'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">full_html</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ssbuilder/builder.html#make_question_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ssbuilder.builder.make_question_page" title="Permalink to this definition">#</a></dt>
+<dd><p>generate html file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>question_id</strong> (<em>string {required}</em>) – name for the question internally</p></li>
+<li><p><strong>figure_type</strong> (<em>string</em>) – string name of valid plot type in ssbuilder</p></li>
+<li><p><strong>figure_values</strong> (<em>dictionary</em>) – parameters to pass to plotting function</p></li>
+<li><p><strong>page_title</strong> (<em>string</em>) – what to show in the tab title default = ‘Normal Curve Question’,</p></li>
+<li><p><strong>question_text</strong> (<em>string</em>) – the text of the questions</p></li>
+<li><p><strong>confirm_message</strong> (<em>text</em>) – prompt for confirmation</p></li>
+<li><p><strong>skip_message</strong> (<em>text</em>) – prompt for skipping</p></li>
+<li><p><strong>button_text</strong> (<em>string</em>) – text on button</p></li>
+<li><p><strong>out_html_file</strong> (<em>string</em>) – name fo the html file, that will be in the url for the participant
+if not passed will add “.html” to the questionid</p></li>
+<li><p><strong>out_rel_path</strong> (<em>string</em><em> or </em><em>file buffer</em>) – where to write the files.</p></li>
+<li><p><strong>logging_vars</strong> (<em>dictionary</em>) – dictionary of names for the variable types the specific question requires</p></li>
+<li><p><strong>confirm_var_name</strong> (<em>string {'confirm'}</em>) – name for the variable, if not passed will be question_id + ‘confirm’  +question_id</p></li>
+<li><p><strong>var_name_suffix</strong> (<em>boolean {True}</em>) – if true, add question_id to the passed values for all _var_names. Default is True,
+can be changed to False if you specify the variable names directly</p></li>
+<li><p><strong>pass_through_vars</strong> (<em>list of strings</em><em> [</em><em>'id'</em><em>]</em>) – list of variables to pass through from previous to next</p></li>
+<li><p><strong>next_question</strong> (<em>string</em>) – question id or url for the qualtrics question</p></li>
+<li><p><strong>pretty_url</strong> (<em>boolean {False}</em>) – if True make pages like <cite>/IndentiCurve/name/</cite> instead of <cite>/IdentiCurve/name.html</cite></p></li>
+<li><p><strong>full_html</strong> (<em>boolean {True}</em>) – generate a full html page or if False, generate only a segment of the page (eg for combining or embedding)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>variables with _var_name + “id” will be passed to qualtrics</p>
+</dd></dl>
+
 </section>
 <section id="building-from-config">
 <h2>Building from config<a class="headerlink" href="#building-from-config" title="Permalink to this headline">#</a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ssbuilder.generate_from_configuration">
+<span class="sig-prename descclassname"><span class="pre">ssbuilder.</span></span><span class="sig-name descname"><span class="pre">generate_from_configuration</span></span><a class="headerlink" href="#ssbuilder.generate_from_configuration" title="Permalink to this definition">#</a></dt>
+<dd><p>alias of &lt;Command generate-from-configuration&gt;</p>
+</dd></dl>
+
 </section>
 </section>
 

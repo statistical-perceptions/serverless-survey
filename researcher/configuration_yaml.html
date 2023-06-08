@@ -415,28 +415,44 @@ document.write(`
 <h3>Page level  Settings<a class="headerlink" href="#page-level-settings" title="Permalink to this headline">#</a></h3>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">ssbuilder</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="c1"># import markdown</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span>
-
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.16</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">ssbuilder</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">.builder</span> <span class="kn">import</span> <span class="n">generate_from_configuration</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">.single_normal_curve</span> <span class="kn">import</span> <span class="n">NormalCurveSlider</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">.tradeoff_questions</span> <span class="kn">import</span> <span class="n">TradeoffLine</span><span class="p">,</span> <span class="n">TradeoffBar</span>
-
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.16</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">ssbuilder</span><span class="o">/</span><span class="n">builder</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">10</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="kn">import</span> <span class="nn">click</span>
-<span class="g g-Whitespace">      </span><span class="mi">9</span> <span class="kn">import</span> <span class="nn">yaml</span>
-<span class="ne">---&gt; </span><span class="mi">10</span> <span class="kn">import</span> <span class="nn">markdown</span>
-<span class="g g-Whitespace">     </span><span class="mi">12</span> <span class="kn">import</span> <span class="nn">pkg_resources</span> <span class="k">as</span> <span class="nn">pkgrs</span>
-<span class="g g-Whitespace">     </span><span class="mi">14</span> <span class="c1"># import plot functions here </span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;markdown&#39;
-</pre></div>
-</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">question_id</span></code> : string {required}
+name for the question internally</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">figure_type</span></code> : string
+string name of valid plot type in ssbuilder</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">figure_values</span></code> : dictionary
+parameters to pass to plotting function</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">page_title</span></code> : string
+what to show in the tab title default = ‘Normal Curve Question’,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">question_text</span></code> : string
+the text of the questions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">confirm_message</span></code> : text
+prompt for confirmation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">skip_message</span></code> : text
+prompt for skipping</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">button_text</span></code> : string
+text on button</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">out_html_file</span></code> : string
+name fo the html file, that will be in the url for the participant
+if not passed will add “.html” to the questionid</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">out_rel_path</span></code> : string or file buffer
+where to write the files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">logging_vars</span></code> : dictionary
+dictionary of names for the variable types the specific question requires</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">confirm_var_name</span></code> : string {‘confirm’}
+name for the variable, if not passed will be question_id + ‘confirm’  +question_id</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">var_name_suffix</span></code> : boolean {True}
+if true, add question_id to the passed values for all _var_names. Default is True,
+can be changed to False if you specify the variable names directly</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pass_through_vars</span></code> : list of strings [‘id’]
+list of variables to pass through from previous to next</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_question</span></code> : string
+question id or url for the qualtrics question</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pretty_url</span></code> : boolean {False}
+if True make pages like <code class="docutils literal notranslate"><span class="pre">/IndentiCurve/name/</span></code> instead of <code class="docutils literal notranslate"><span class="pre">/IdentiCurve/name.html</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">full_html</span></code> : boolean {True}
+generate a full html page or if False, generate only a segment of the page (eg for combining or embedding)</p></li>
+</ul>
 </div>
 </div>
 </section>
@@ -451,6 +467,68 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%</span><span class="k">bash</span>
 ssgeneratehtml --help
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Usage: ssgeneratehtml [OPTIONS]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Generate html files from a configuration file
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Parameters ---------- config_file : string or None     file name, if none,
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  configureation.yml assumed repo_name : string {None}     name of the repo
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  gh_org : string {None}     name of the gh org or user that owns the repo to
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  build the URL debug : bool     print debuggin information or not fragment :
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  bool     generate a fragment or not all_in_one : bool     merge files to a
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  single htmlfile
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Options:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -f, --config-file TEXT
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -p, --out_rel_path TEXT
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -r, --repo_name TEXT
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -o, --gh_org TEXT
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -d, --debug
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  --fragment
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -a, --all_in_one
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  --help                   Show this message and exit.
 </pre></div>
 </div>
 </div>

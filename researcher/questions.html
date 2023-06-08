@@ -341,36 +341,46 @@ document.write(`
 </ul>
 <p>the <code class="docutils literal notranslate"><span class="pre">question_text</span></code> can include markdown formatting which will be rendered with the <a class="reference external" href="https://pypi.org/project/Markdown/">markdown</a> package</p>
 <div class="cell tag_remove-input docutils container">
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">ssbuilder</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="c1"># import markdown</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span>
-
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.16</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">ssbuilder</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span> <span class="nn">.builder</span> <span class="kn">import</span> <span class="n">generate_from_configuration</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">.single_normal_curve</span> <span class="kn">import</span> <span class="n">NormalCurveSlider</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">.tradeoff_questions</span> <span class="kn">import</span> <span class="n">TradeoffLine</span><span class="p">,</span> <span class="n">TradeoffBar</span>
-
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.16</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">ssbuilder</span><span class="o">/</span><span class="n">builder</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">10</span>
-<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="kn">import</span> <span class="nn">click</span>
-<span class="g g-Whitespace">      </span><span class="mi">9</span> <span class="kn">import</span> <span class="nn">yaml</span>
-<span class="ne">---&gt; </span><span class="mi">10</span> <span class="kn">import</span> <span class="nn">markdown</span>
-<span class="g g-Whitespace">     </span><span class="mi">12</span> <span class="kn">import</span> <span class="nn">pkg_resources</span> <span class="k">as</span> <span class="nn">pkgrs</span>
-<span class="g g-Whitespace">     </span><span class="mi">14</span> <span class="c1"># import plot functions here </span>
-
-<span class="ne">ModuleNotFoundError</span>: No module named &#39;markdown&#39;
-</pre></div>
-</div>
-</div>
 </div>
 <section id="normal-curve-questions">
 <h2>Normal Curve Questions<a class="headerlink" href="#normal-curve-questions" title="Permalink to this headline">#</a></h2>
 <p>This question has two normal curves, one moves and one does not.</p>
 <p>Use <code class="docutils literal notranslate"><span class="pre">figure_type:</span> <span class="pre">NormalCurveSlider</span></code> with the following parameters in <code class="docutils literal notranslate"><span class="pre">figure_values</span></code></p>
 <div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">static_name</span></code> : string
+legend text for static curve</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">static_color</span></code> : hex including #
+hex code for the color to use for static curve, including a # sign as the first character</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">static_mean</span></code> : number
+location of the static curve</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">static_curve_width</span></code> : number
+width of curve, as the scipy.norm scale</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dynamic_name</span></code> : string
+legend text for dynamic curve</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dynamic_color</span></code> : hex including #
+hex code for the color to use for dynamic curve, including a # sign as the first character</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dynamic_starting_mean</span></code> : number
+the location where the slider starts</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">curve_width</span></code> : number
+width of curves</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_slider_locs</span></code> : integer
+number of slilder locations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">min_slider_value</span></code> : number
+the minimum value for the slider</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_slider_value</span></code> : number
+the maximum value for the slider</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">overlap_decimals</span></code> : integer
+number of place values to round the % overlap value to for both display and reporting,
+positive to the right of the decimal, negative for left of decimal (eg -2 rounds to nearest 100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mean_decimals</span></code> : integer
+number of place values to round the mean (position) value to for both display and reporting
+positive to the right of the decimal, negative for left of decimal (eg -2 rounds to nearest 100)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">xaxis_title</span></code> : string
+text label for the x axis</p></li>
+</ul>
+</div>
 </div>
 </section>
 <section id="trade-off-questions">
@@ -380,6 +390,37 @@ document.write(`
 <h3>Line Graph<a class="headerlink" href="#line-graph" title="Permalink to this headline">#</a></h3>
 <p>Use <code class="docutils literal notranslate"><span class="pre">figure_type:</span> <span class="pre">TradeoffLine</span></code> with the following parameters for use in <code class="docutils literal notranslate"><span class="pre">figure_values</span></code>:</p>
 <div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pretty_data_file</span></code> : string
+file name of a tidy (tall) dataset with pretty content. that is any data transformations
+should occur on the data (eg scaling .7523943 to 75.23943 and expanding column names)
+column names can still rely on python conventions, before display the <code class="docutils literal notranslate"><span class="pre">_</span></code> will be converted to space</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slider_column</span></code> : string
+name of column to use for the slider</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slider_label</span></code> : string
+name to display when labeling the slider postion values (and in hovertext)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x_col,y_col</span></code> : string
+name of column to use for the xor y axis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trace_value1,trace_value2</span></code> : same as the values of <code class="docutils literal notranslate"><span class="pre">x_col</span></code> in the data file
+first,second value to filter (left, right metric)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trace1_hover,</span></code> trace2_hover : string
+noun versions to use in the hovertext</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y_min,y_max</span></code> : numerical
+minimum and maximum values to fix the plot axies, if none, allow plotly to decide</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_digits</span></code> : num digits to display
+color_col: string
+name of colum to use for the colring of the lines</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">color_hover</span></code> : string
+noun to use for groups</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">disable_zoom</span></code> : bool
+disable the zoom on the generated plot</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">anchor_name</span></code> : string
+name for vertical bar
+default_selection :int
+model that is selected when laoding</p></li>
+</ul>
+</div>
 </div>
 <!-- edit in docstring -->
 </section>
@@ -387,6 +428,33 @@ document.write(`
 <h3>Bar Graph<a class="headerlink" href="#bar-graph" title="Permalink to this headline">#</a></h3>
 <p>Use <code class="docutils literal notranslate"><span class="pre">figure_type:</span> <span class="pre">TradeoffBar</span></code> with the following parameters for use in <code class="docutils literal notranslate"><span class="pre">figure_values</span></code></p>
 <div class="cell tag_remove-input docutils container">
+<div class="cell_output docutils container">
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pretty_data_file</span></code> : string
+file name of a tidy (tall) dataset with pretty content. that is any data transformations
+should occur on the data (eg scaling .7523943 to 75.23943 and expanding column names)
+column names can still rely on python conventions, before display the <code class="docutils literal notranslate"><span class="pre">_</span></code> will be converted to space</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slider_column</span></code> : string
+name of column to use for the slider</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">slider_label</span></code> : string
+name to display when labeling the slider postion values (and in hovertext)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x_col,y_col</span></code> : string
+name of column to use for the xor y axis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x_value1,x_value2</span></code> : same as the values of <code class="docutils literal notranslate"><span class="pre">x_col</span></code> in the data file
+first,second value to filter (left, right metric)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x_value1_hover,</span></code> x_value2_hover : string
+noun versions to use in the hovertext</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y_min,y_max</span></code> : numerical
+minimum and maximum values to fix the plot axies, if none, allow plotly to decide</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">num_digits</span></code> : num digits to display
+color_col: string
+name of colum to use for the colring of the bars
+color_hover:
+hover text to use for groups created by color</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">disable_zoom</span></code> : bool
+disable the zoom on the generated plot</p></li>
+</ul>
+</div>
 </div>
 </section>
 </section>

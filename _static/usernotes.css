@@ -1,0 +1,12 @@
+div.developer {
+    border-left-color: rgba(var(--pst-color-warning), 1);
+}
+
+div.developer .admonition-title {
+    background-color: rgba(var(--pst-color-warning), .1);
+}
+
+div.developer .admonition-title:before {
+    color: rgba(var(--pst-color-warning), 1);
+    content: '\f121';
+}

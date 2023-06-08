@@ -17,8 +17,9 @@ kernelspec:
 A configuration file is yaml
 
 
-## How YAML works 
+## YAML Format
 
+There are two supported formats for the configuration file
 
 ### No shared parameters 
 

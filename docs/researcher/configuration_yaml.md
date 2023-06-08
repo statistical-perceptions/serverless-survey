@@ -125,6 +125,9 @@ These settings vary by question type and the options are detailed on [](question
 Serverless Survey has some settings that are for a whole study or about how to process the configuration file. 
 
 These are set as CLI arguments if you build offline.  If you use our template repo, you will have a set of options for these controls in your actions tab.  
+
+This is where the path to save the output html files are set as well as the url of the hosted site for generating the instructions. There is also the option to generate only a fragment or to put all questions on a single page (eg for IRB review or paper supplemental materials). 
+
 ```{code-cell} ipython3
 %%bash
 ssgeneratehtml --help

@@ -349,7 +349,7 @@ def generate_from_configuration(config_file=None,repo_name=None,
     fragment : bool
         generate a fragment or not
     all_in_one : bool
-        merge files to a single htmlfile
+        merge files to a single htmlfile, this version will not work as as a survey
     '''
     # create url from repo and org if not passed
     if not(out_url):

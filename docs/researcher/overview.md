@@ -15,9 +15,22 @@ In this case your overall workflow will include the following steps:
 2. Set up your study in the configuration file [following yaml guide, page settings,](configuration_yaml) and [question specific settings](questions)
 5. Build the survey using actions in your study repo  (more details in [template](sstemplate) README)
 6. Use the generated instructions to set up your qualtrics survey to forward and recieve data using embedded data following our [qualtrics instructions page](qualtrics)
-7. Take your survey, entering plausible values to check that your data is showing up as expected in qualtrics (check all of the surveys). 
-8. Run your study! 
+7. check at the end of the instructions page that your study does not need to send more than the maximum amount of data to qualtrics at once
+8. Take your survey, entering plausible values to check that your data is showing up as expected in qualtrics (check all of the surveys). 
+9. Run your study! 
+
+**Notes**:
+- your repo can be private, but you do have to turn on the github pages
+- there is a limited number of characters that can be passed, but it is not well documented and varies browser to browser.  We recommend no more than 2000 characters passing to qualtrics at each time.  You can split into multiple surveys for longer studies. 
 
 You'll then have a set of data files to merge together to combine multiple sections and be able to analyze your data. 
+
+## Use details
+
+There is a CLI tool and it generates html files in a single folder.  These files can then be hosted anywhere. 
+
+The CLI includes two main commands: 
+- `ssgeneratehtml` generates the html files and instructions md file. 
+- `sslengthcheck` checks the length of the forwarded message after a study has been generated. It uses the instructions file as input
 
 [sstemplate]: https://github.com/statistical-perceptions/ss-template

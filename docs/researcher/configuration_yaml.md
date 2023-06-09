@@ -54,9 +54,11 @@ Notes:
 
 Some come from the question and others are for the pate
 
-### No shared parameters 
+### Shared parameters 
 
-To share values across question it can be set up like
+To share values across question it can be set up so that the top level is a single entry with two keys (`shared` and `unique`) where the `shared` key includes the parameter values that are to be applied to all questiona and `unique` includes a list defining individiual questions as above.  Any values defined in both, the `unique` will overwrite the `shared` value.  
+
+For example: 
 ```
 shared: 
   name_of_var1_shared: value_for_var1_shared
@@ -74,7 +76,7 @@ unique:
     name_of_fig_var1_for_q2: value_for_fig_var1_for_q2
 ```
 
-This is equivalent to (but, for many questions,  more compact than)
+This is equivalent to (but, for large number of questions,  more compact than):
 
 ```
 - question_id: unique_id_for_q1
@@ -115,6 +117,18 @@ Markdown(ssbuilder.md_params(ssbuilder.builder.make_question_page))
 ```{warning}
 You cannot use `end` as a question ID, or `end.html` as an output file name
 ```
+
+### Question Text
+
+Questions' text goes in the page level parameter `question_text`. It may include markdown formatting to be rendered.  
+
+Some key examples:
+- `**bold**`
+- `*italic*`
+- `- bulleted text`
+- `[link display text](url/for/link)`
+- a blank space at the end of aline will make a new paragraph
+
 
 ### Figure specific Settings
 

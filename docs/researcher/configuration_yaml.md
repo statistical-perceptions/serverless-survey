@@ -44,9 +44,8 @@ This file is setup like:
 
 Notes: 
 - Each `name_of_varX_for_qY` has to be a variable that the `make_question_page` function accepts
-- reference for the functions is at the top of the notebook
-- any variables not specified will get the default value as stated inthe documentation
-- `figure_values` is a special variable that takes more variables.  the nams of the fig variables are the ones for the `normal_curve_slider` function
+- any variables not specified will get the default value as stated in the documentation
+- `figure_values` is a special variable that takes more variables.  the names of the fig variables are defined for each question
 - the variables can be in any order
 - `question_id` must be stated, there is no default value for it 
 - only the first variable for each question gets a `-`

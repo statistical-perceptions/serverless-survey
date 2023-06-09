@@ -12,6 +12,7 @@ setup(
     entry_points={
         'console_scripts': [
             'ssgeneratehtml = ssbuilder:generate_from_configuration',
+            'sslengthcheck = ssbuilder:check_query_length'
         ],
     },
 )

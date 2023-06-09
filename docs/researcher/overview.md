@@ -15,7 +15,7 @@ In this case your overall workflow will include the following steps:
 2. Set up your study in the configuration file [following yaml guide, page settings,](configuration_yaml) and [question specific settings](questions)
 5. Build the survey using actions in your study repo  (more details in [template](sstemplate) README)
 6. Use the generated instructions to set up your qualtrics survey to forward and recieve data using embedded data following our [qualtrics instructions page](qualtrics)
-7. Test to check that your data is showing up as expected in qualtrics (check all of the studies)
+7. Take your survey, entering plausible values to check that your data is showing up as expected in qualtrics (check all of the surveys). 
 8. Run your study! 
 
 You'll then have a set of data files to merge together to combine multiple sections and be able to analyze your data. 

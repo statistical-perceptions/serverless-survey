@@ -375,7 +375,11 @@ def generate_from_configuration(config_file=None,repo_name=None,
         loaded_config = yaml.load(f, Loader=yaml.Loader)
 
     # process shared params if provided
-    if 'shared' in loaded_config.keys():
+    if type(loaded_config) == list:
+         
+        # pass as is
+        full_config = loaded_config
+    elif 'shared' in loaded_config.keys():
         question_template = loaded_config['shared']
         question_unique = loaded_config['unique']
 
@@ -396,9 +400,7 @@ def generate_from_configuration(config_file=None,repo_name=None,
             
             # update  remaining parameters
             fc_i.update(q_i)
-    else: 
-        # pass as is
-        full_config = loaded_config
+    
     
     # parse for pass through vars for sequential questions
     parsed_config = set_pass_through(full_config)
@@ -410,6 +412,7 @@ def generate_from_configuration(config_file=None,repo_name=None,
     with open(instruction_file, 'w') as f:
         f.write('\n'.join(instructions))
 
+    # check if end.html is required
     next_url_list = question_ids = [d['next_question_url'] for d in full_config]
     if 'end.html' in next_url_list:
         end_html = load_template_file('end.html')

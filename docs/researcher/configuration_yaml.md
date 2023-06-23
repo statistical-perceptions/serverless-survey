@@ -53,7 +53,7 @@ Notes:
 
 Some come from the question and others are for the pate
 
-### No shared parameters 
+### With shared parameters 
 
 To share values across question it can be set up like
 ```

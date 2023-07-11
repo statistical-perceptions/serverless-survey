@@ -221,7 +221,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
                      'out_url':out_url}
     return settings_message_template.format(**settings_vars)
 
-def set_pass_through(config_dict_list):
+def set_pass_through(config_dict_list,
+    study_default_pt_vars = ['id']):
     '''
     set the pass_through_vars values 
 
@@ -229,7 +230,10 @@ def set_pass_through(config_dict_list):
     ----------
     config_dict_list : dictionary
         dictionary with parameters of the page builder as keys
+    study_default_pt_vars : list
+        list of variables that all questions pass through
     '''
+    
     # note in this function we rely on that dictionaries are not copied
     # set question_id as keys for better indexing
     conf_qid = {d['question_id']: d for d in config_dict_list}
@@ -253,8 +257,6 @@ def set_pass_through(config_dict_list):
                 else:
                     # put this question in the list
                     q_traverse_order.append(q_id)
-                    
-
 
             # check if its and id
             while next_question in question_ids and not(next_question in q_traverse_order):
@@ -289,12 +291,16 @@ def set_pass_through(config_dict_list):
             if 'pass_through_vars' in conf_qid[next_question]:
                 conf_qid[next_question]['pass_through_vars'] += cur_q_vars
             else: 
-                conf_qid[next_question]['pass_through_vars'] = ['id'] + cur_q_vars
+                conf_qid[next_question]['pass_through_vars'] = study_default_pt_vars + cur_q_vars
+            
             # set true url 
             if 'out_html_file' in conf_qid[next_question].keys():
                 conf_qid[q_id]['next_question_url'] = conf_qid[next_question]['out_html_file']
             else:
                 conf_qid[q_id]['next_question_url'] = conf_qid[next_question]['question_id'].lower() + '.html'
+        else:
+            # if not forwarding, just set own pass through with study level
+            conf_qid[q_id]['pass_through_vars'] = study_default_pt_vars 
 
     # return as list of dicts
     return list(conf_qid.values())
@@ -307,11 +313,13 @@ def set_pass_through(config_dict_list):
 @click.option('-d','--debug',is_flag=True)
 @click.option('--fragment',is_flag=True)
 @click.option('-a','--all_in_one',is_flag=True)
+@click.option('-v','--study-pass-through-vars', multiple=True, default=['id'])
               
 def generate_from_configuration(config_file=None,repo_name=None,
                                 gh_org=None,out_url=None,
                                 debug=False, out_rel_path='',
-                                fragment=False,all_in_one=False):
+                                fragment=False,all_in_one=False,
+                                study_pass_through_vars = ['id']):
     '''
     Generate html files from a configuration file
 
@@ -334,6 +342,10 @@ def generate_from_configuration(config_file=None,repo_name=None,
     all_in_one : bool
         merge files to a single htmlfile, this version will not work as as a survey
     '''
+    if not(type(study_pass_through_vars) ==list):
+        study_pass_through_vars = list(study_pass_through_vars)
+    
+
     # create url from repo and org if not passed
     if not(out_url):
         out_url = ''
@@ -357,7 +369,8 @@ def generate_from_configuration(config_file=None,repo_name=None,
     with open(config_file, 'r') as f:
         loaded_config = yaml.load(f, Loader=yaml.Loader)
 
-    # process shared params if provided
+    # ------------------------------------------------------------------------  
+    #   process shared params if provided
     if type(loaded_config) == list:
          
         # pass as is
@@ -384,9 +397,10 @@ def generate_from_configuration(config_file=None,repo_name=None,
             # update  remaining parameters
             fc_i.update(q_i)
     
-    
+    # ------------------------------------------------------------------------
     # parse for pass through vars for sequential questions
-    parsed_config = set_pass_through(full_config)
+    
+    parsed_config = set_pass_through(full_config,study_pass_through_vars)
 
     # -------------- generate all of the files and save the instructions
     instructions = [make_question_page(

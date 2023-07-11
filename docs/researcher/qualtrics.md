@@ -5,13 +5,13 @@
 This is the base documentation that may need updates
 ```
 
-## Overview
+## Basic use
 
-1. the first qualtrics survey sends data to normal curve only
-2. middle ones receive data from and send data to the normal curve
+1. the first qualtrics survey sends embedded data via forwarding only
+2. middle ones receive data and send data 
 3. the last one receives data only
 
-## Qualtrics -> SS
+### Sending the ID from Qualtrics
 
 1. Add an embedded data block with the identifier to forward (eg panel ID or Response ID)
 2. redirect end of survey to a url
@@ -19,7 +19,7 @@ This is the base documentation that may need updates
 
 Template
 ```
-https://statistical-perceptions.github.io/IdentiCurve/<question_out_html_file>.html?id=<qualtrics piped text)
+https://statistical-perceptions.github.io/IdentiCurve/<question_out_html_file>.html?id=<qualtrics piped text>
 ```
 
 Example
@@ -33,18 +33,70 @@ note:
 - if needed, we can pass more than a single unique identifier on, but that requires code changes
 
 
-### SS -> qualtrics
+### Recieving Data into Qualtrics
 
-1. set up embedded data as the first block on the workflows tab
+1. set up embedded data as the first block on the workflows tab. set the variables as per the instructions output
 2. (if applicable) use piped text to refer to those values in the question text
 3. (optional) add a branch after the embedded data to have people skip the survey "if id is Equal to demo" 
 
 - [getting data from url](https://www.qualtrics.com/support/survey-platform/survey-module/survey-flow/standard-elements/embedded-data/#SettingValuesFromTheSurveyURL)
-- 
+
+
+### Branching to different ss questions based on qualtrics answers 
+
+1. on the survey flow tab add a branch
+2. set the condition to be based on a question
+3. add the url to forward to
+4. (if applicable) add the variable value to the forward url 
+
+
+Template
+```
+https://statistical-perceptions.github.io/IdentiCurve/<question_out_html_file>.html?id=<qualtrics piped text>&var=value
+```
+
+Example
+
+```
+https://statistical-perceptions.github.io/sample-nobackend/?id=${e://Field/ResponseID}&group=w
+```
+in this case, I only had one question page so there is no question_id set and I used the ResponseID feild. 
+
+### Branching to different ss questions based on embedded data
+
+1. make sure the embedded data received includes the pass through variable
+2. on the survey flow tab add a branch
+3. set the condition to be based on embedded data and choose the values
+4. add the url to forward to
+5. (if applicable) add the variable value to the forward url 
+
+
+Template
+```
+https://org-or-user.github.io/repo/question_out_html_file.html?id=<qualtrics piped text>&var=value
+```
+
+Example
+
+```
+https://statistical-perceptions.github.io/IdentiCurve/nc2t1w.html?id=${e://Field/ResponseID}&group=${e://Field/group}
+```
+
+### Semi-automatic forwarding to different qustions
+
+1. set up configurations so that the logic variable values are in the question ids (or html file names)
+2. make sure embedded data received includes the variable used for logic
+3. set up the url like (for `group` as the logic variable)
+
+
+```
+https://statistical-perceptions.github.io/IdentiCurve/nc2t1${e://Field/group}.html?id=${e://Field/ResponseID}&group=${e://Field/group}
+```
+ 
 
 ## Qualtrics Help 
 
-- [Piped text](https://www.qualtrics.com/support/survey-platform/survey-module/editing-questions/piped-text/piped-text-overview/)
-- [sum question](https://www.qualtrics.com/support/survey-platform/survey-module/editing-questions/question-types-guide/specialty-questions/constant-sum/)
-- [embedded data](https://www.qualtrics.com/support/survey-platform/survey-module/survey-flow/standard-elements/embedded-data/)
+- [Passing with Query Strings](https://www.qualtrics.com/support/survey-platform/survey-module/survey-flow/standard-elements/passing-information-through-query-strings/): about the url
+- [Piped text](https://www.qualtrics.com/support/survey-platform/survey-module/editing-questions/piped-text/piped-text-overview/): about getting and formatting variables for the url or for using responses to modify qualtrics questions
+- [embedded data](https://www.qualtrics.com/support/survey-platform/survey-module/survey-flow/standard-elements/embedded-data/): for storing data to send and receive it
 

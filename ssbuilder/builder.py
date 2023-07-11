@@ -299,17 +299,6 @@ def set_pass_through(config_dict_list):
     # return as list of dicts
     return list(conf_qid.values())
 
-wdef get_file_name(question_dict):
-    '''
-    get the file name for a question from its dictionary
-    '''
-    if not('out_html_file' in question_dict.keys()):
-        out_html_file = question_dict['question_id'].lower() + '.html'
-    elif not (question_dict['out_html_file'][-5:] == '.html'):
-        out_html_file = question_dict['out_html_file']+ '.html'
-    
-    return out_html_file
-
 @click.command()
 @click.option('-f','--config-file')
 @click.option('-p', '--out_rel_path')

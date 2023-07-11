@@ -299,13 +299,7 @@ def set_pass_through(config_dict_list):
     # return as list of dicts
     return list(conf_qid.values())
 
-def link_question(q_config_dict):
-    '''
-    take a single config dictionary and update
-    '''
-    # TODO: not recursive, but needs to traverse, then order, then update in order, propagting through to the end
-
-def get_file_name(question_dict):
+wdef get_file_name(question_dict):
     '''
     get the file name for a question from its dictionary
     '''
@@ -424,11 +418,11 @@ def generate_from_configuration(config_file=None,repo_name=None,
     if all_in_one:
         # extract file names
         file_list = [get_file_name(q) for q in parsed_config]
-        page = load_template_file('aio_header.html').format(study_name = repo_name)
+        page = load_template_file('page_header.html').format(study_name = repo_name)
         for file_name in file_list:
             with open(os.path.join(out_rel_path,file_name),'r') as f:
                 page +=f.read()
-        page += load_template_file('aio_footer.html')
+        page += load_template_file('page_footer.html')
 
         with open(os.path.join(out_rel_path, 'aio.html'),'w') as f:
             f.write(page)

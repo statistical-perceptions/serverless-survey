@@ -84,15 +84,29 @@ https://statistical-perceptions.github.io/IdentiCurve/nc2t1w.html?id=${e://Field
 
 ### Semi-automatic forwarding to different qustions
 
+In order to have a survey where there are different versions of the questions for different participants depending on a response of a question, set up a question in qualtrics where the response will be the "logic variable." Then make it so that the logic variable is passed along with the ID and its values appear in the url so that the variable in piped text can make it work.  
+
 1. set up configurations so that the logic variable values are in the question ids (or html file names)
 2. make sure embedded data received includes the variable used for logic
 3. set up the url like (for `group` as the logic variable)
 
 
 ```
-https://statistical-perceptions.github.io/IdentiCurve/nc2t1${e://Field/group}.html?id=${e://Field/ResponseID}&group=${e://Field/group}
+https://ghorg.github.io/repo/page_url${e://Field/logicvariable}.html?id=${e://Field/ResponseID}&group=${e://Field/logicvariable}
 ```
  
+For example if the following is in qualtrics as the forward url 
+
+
+```
+https://statistical-perceptions.github.io/IdentiCurve/nc2t1${e://Field/group}.html?id=${e://Field/ResponseID}&group=${e://Field/group}
+```
+
+when `group=a` the url will become
+
+```
+https://statistical-perceptions.github.io/IdentiCurve/nc2t1a.html?id=RH2904&group=a
+```
 
 ## Qualtrics Help 
 

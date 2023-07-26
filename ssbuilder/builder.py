@@ -309,7 +309,8 @@ def set_pass_through(config_dict_list,
                 if debug:
                     click.echo(q_id)
                     click.echo('adding cur vars to pass on next q')
-                cur_q_vars += conf_qid[q_id]['pass_through_vars'][1:]
+                
+                cur_q_vars += conf_qid[q_id]['pass_through_vars']
             # add append or create passthrough vars key
             if 'pass_through_vars' in conf_qid[next_question]:
                 if debug:
@@ -317,14 +318,19 @@ def set_pass_through(config_dict_list,
                     click.echo(study_default_pt_vars)
                     click.echo(cur_q_vars)
                     click.echo(next_question)
-                conf_qid[next_question]['pass_through_vars'] += cur_q_vars
+                # appnd
+                next_pass_through = conf_qid[next_question]['pass_through_vars'] + cur_q_vars
             else: 
                 if debug:
                     click.echo('set ptv ')
                     click.echo(study_default_pt_vars)
                     click.echo(cur_q_vars)
                     click.echo(next_question)
-                conf_qid[next_question]['pass_through_vars'] = study_default_pt_vars + cur_q_vars
+                # setup
+                next_pass_through = study_default_pt_vars + cur_q_vars
+
+            # remove duplicates
+            conf_qid[next_question]['pass_through_vars'] = list(set(next_pass_through))
             
             # set true url to next question url (either specfied or question id)
             if 'out_html_file' in conf_qid[next_question].keys():

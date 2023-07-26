@@ -102,6 +102,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     -----
     variables with _var_name + "id" will be passed to qualtrics
     '''
+    if debug:
+        click.echo('building page')
     # validate the question id done into something that can work
     question_id = question_id.replace('/', '').replace(' ', '-').lower()
 
@@ -149,6 +151,9 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     # pass through vars
     pass_through_template = load_template_file('question_form_elements','pass_through_var.html')
     
+    if debug:
+        click.echo(out_html_file)
+        click.echo(pass_through_vars)
     pass_through_html = [pass_through_template.format(pass_var_name= ptvar)
                                      for ptvar in pass_through_vars if not(ptvar=='id')]
     question_form_elements = question_form_html + '\n\n'.join([''] + pass_through_html)
@@ -222,7 +227,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     return settings_message_template.format(**settings_vars)
 
 def set_pass_through(config_dict_list,
-    study_default_pt_vars = ['id']):
+                     study_default_pt_vars=['id'], debug=False):
     '''
     set the pass_through_vars values 
 
@@ -233,6 +238,8 @@ def set_pass_through(config_dict_list,
     study_default_pt_vars : list
         list of variables that all questions pass through
     '''
+    if debug:
+        click.echo('pass through')
     
     # note in this function we rely on that dictionaries are not copied
     # set question_id as keys for better indexing
@@ -243,8 +250,11 @@ def set_pass_through(config_dict_list,
     q_traverse_order = []
     # iterate over list in order, produce traversal order
     for q_id in question_ids:
-
+        # set default ptvars
+        
+        conf_qid[q_id]['pass_through_vars'] = study_default_pt_vars.copy()
         if 'next_question_url' in conf_qid[q_id]:
+            
             # get next q target
             next_question = conf_qid[q_id]['next_question_url']
 
@@ -272,8 +282,18 @@ def set_pass_through(config_dict_list,
         # get next q target
         next_question = conf_qid[q_id]['next_question_url']
 
+        if debug:
+            if 'pass_through_vars' in conf_qid[q_id]:
+                click.echo('preset ptv on')
+                click.echo(q_id)
+                click.echo(conf_qid[q_id]['pass_through_vars'])
+
         # check if its an id
         if next_question in question_ids:
+            if debug:
+                click.echo(q_id)
+                click.echo('forwards to ')
+                click.echo(next_question)
             # extract pass through vars and confirm
             cur_question_vars = list(conf_qid[q_id]['logging_vars'].values())
             cur_confirm = conf_qid[q_id]['confirm_var_name']
@@ -286,21 +306,34 @@ def set_pass_through(config_dict_list,
             cur_q_vars = [cur_confirm] + cur_question_vars
             # append current pass throughs if they exist
             if 'pass_through_vars' in conf_qid[q_id]:
+                if debug:
+                    click.echo(q_id)
+                    click.echo('adding cur vars to pass on next q')
                 cur_q_vars += conf_qid[q_id]['pass_through_vars'][1:]
             # add append or create passthrough vars key
             if 'pass_through_vars' in conf_qid[next_question]:
+                if debug:
+                    click.echo('append ptv ')
+                    click.echo(study_default_pt_vars)
+                    click.echo(cur_q_vars)
+                    click.echo(next_question)
                 conf_qid[next_question]['pass_through_vars'] += cur_q_vars
             else: 
+                if debug:
+                    click.echo('set ptv ')
+                    click.echo(study_default_pt_vars)
+                    click.echo(cur_q_vars)
+                    click.echo(next_question)
                 conf_qid[next_question]['pass_through_vars'] = study_default_pt_vars + cur_q_vars
             
-            # set true url 
+            # set true url to next question url (either specfied or question id)
             if 'out_html_file' in conf_qid[next_question].keys():
                 conf_qid[q_id]['next_question_url'] = conf_qid[next_question]['out_html_file']
             else:
                 conf_qid[q_id]['next_question_url'] = conf_qid[next_question]['question_id'].lower() + '.html'
-        else:
-            # if not forwarding, just set own pass through with study level
-            conf_qid[q_id]['pass_through_vars'] = study_default_pt_vars 
+        # else:
+        #     # if not forwarding, just set own pass through with study level
+        #     conf_qid[q_id]['pass_through_vars'] = study_default_pt_vars 
 
     # return as list of dicts
     return list(conf_qid.values())
@@ -400,11 +433,13 @@ def generate_from_configuration(config_file=None,repo_name=None,
     # ------------------------------------------------------------------------
     # parse for pass through vars for sequential questions
     
-    parsed_config = set_pass_through(full_config,study_pass_through_vars)
+    parsed_config = set_pass_through(full_config,study_pass_through_vars, debug)
 
     # -------------- generate all of the files and save the instructions
     instructions = [make_question_page(
-        **q, out_url=out_url, out_rel_path=out_rel_path, debug=debug,full_html=not(fragment)) for q in parsed_config]
+        **q, out_url=out_url, out_rel_path=out_rel_path,
+          debug=debug,full_html=not(fragment)) 
+        for q in parsed_config]
     #  save instructions
     with open(instruction_file, 'w') as f:
         f.write('\n'.join(instructions))

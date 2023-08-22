@@ -5,7 +5,8 @@ setup(
     version='0.1.0',
     packages=['ssbuilder'],
     install_requires=[
-        'Click', 'pandas', 'lxml', 'plotly', 'requests', 'html5lib'
+        'Click', 'pandas', 'lxml', 'plotly', 'requests', 'html5lib',
+        'markdown'
     ],
 
     include_package_data=True,

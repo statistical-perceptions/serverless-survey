@@ -108,12 +108,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     question_id = question_id.replace('/', '').replace(' ', '-').lower()
 
     #     ensure file name is valid
-    if not (out_html_file):
-        out_html_file = question_id.lower() + '.html'
-    elif not (out_html_file[-5:] == '.html'):
-        out_html_file += '.html'
-
-    out_html_file = out_html_file.replace('/', '').replace(' ', '-').lower()
+    out_html_file = get_file_name(out_html_file, question_id)
 
     # fix defaults
 
@@ -344,6 +339,26 @@ def set_pass_through(config_dict_list,
     # return as list of dicts
     return list(conf_qid.values())
 
+
+def get_file_name(question_dict = None, out_html_file=None, question_id = None):
+    '''
+    get the file name for a question
+    '''
+    if question_dict:
+        question_id = question_dict['question_id']
+        if 'out_file_html' in question_dict.keys():
+            out_html_file = question_dict['out_file_html']
+        
+
+    if not (out_html_file):
+        out_html_file = question_id.lower() + '.html'
+    elif not (out_html_file[-5:] == '.html'):
+        out_html_file += '.html'
+
+    out_html_file = out_html_file.replace('/', '').replace(' ', '-').lower()
+
+    return out_html_file
+
 @click.command()
 @click.option('-f','--config-file')
 @click.option('-p', '--out_rel_path')
@@ -450,8 +465,10 @@ def generate_from_configuration(config_file=None,repo_name=None,
     with open(instruction_file, 'w') as f:
         f.write('\n'.join(instructions))
 
-    # check if end.html is required
-    next_url_list = question_ids = [d['next_question_url'] for d in full_config]
+    # check if end.html is required 
+    #  end.html is an option for the `next_question_url` parameter to send people to a landing
+    # page instead of qualtrics
+    next_url_list = [d['next_question_url'] for d in full_config]
     if 'end.html' in next_url_list:
         end_html = load_template_file('end.html')
         with open(os.path.join(out_rel_path,file_name),'w') as f:
@@ -461,7 +478,7 @@ def generate_from_configuration(config_file=None,repo_name=None,
     # merge if appropriate
     if all_in_one:
         # extract file names
-        file_list = [get_file_name(q) for q in parsed_config]
+        file_list = [get_file_name(question_dict=q) for q in parsed_config]
         page = load_template_file('page_header.html').format(study_name = repo_name)
         for file_name in file_list:
             with open(os.path.join(out_rel_path,file_name),'r') as f:

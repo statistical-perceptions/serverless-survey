@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='serverlesssurvey',
-    version='0.1.0',
+    version='0.2.0',
     packages=['ssbuilder'],
     install_requires=[
         'Click', 'pandas', 'lxml', 'plotly', 'requests', 'html5lib',
@@ -13,7 +13,8 @@ setup(
     entry_points={
         'console_scripts': [
             'ssgeneratehtml = ssbuilder:generate_from_configuration',
-            'sslengthcheck = ssbuilder:check_query_length'
+            'sslengthcheck = ssbuilder:check_query_length',
+            'ssmergedir = ssbuilder:merge_dir_csvs'
         ],
     },
 )

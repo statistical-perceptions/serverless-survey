@@ -1,4 +1,6 @@
 import click
+import os
+import pandas as pd
 
 def md_params(function):
     '''
@@ -144,3 +146,50 @@ def calculate_query_length(filename,vars_only=False,
         est_chars += prefix_length
 
     return est_chars
+
+
+@click.command()
+@click.argument('folder', type=click.Path(exists=True))
+@click.option('-m','--merge_on',default='id')
+@click.option('-o','--out_name')
+def merge_dir_csvs(folder,merge_on='id',out_name=None):
+    '''
+    merge all csvs in a folder into a single CSV file
+    
+    Parameters
+    ----------
+    folder : string
+        folder name
+    merge_on : string
+        column shared across all files, default id
+    out_name : string
+        name to use the file, if not provided uses folder.csv
+    '''
+    # get all fo the files
+    file_list= [file for file in os.listdir(folder) if file[-4:]=='.csv']
+
+    data_frame_list = [pd.read_csv(os.path.join(folder,file)) for file in file_list]
+
+    # merge the first two
+    out_df = pd.merge(data_frame_list[0],data_frame_list[0],
+                      suffixes=('_'+file_list[0][:-4],'_'+file_list[1][:-4]),on=merge_on)
+    
+    # merge the rest onto those two
+    if len(file_list) >2:
+        for next_df,source_file in zip(data_frame_list[2:],file_list[2:]):
+            # 
+            out_df = pd.merge(out_df, next_df, on = merge_on, how='outer',suffixes=('', '_'+source_file[:-4]))
+        # 
+
+    
+    # use provided name if provided or folder name otherwise 
+    if out_name:
+         
+        if not(out_name[-4:] == '.csv'):
+            out_name += '.csv'
+
+        out_df.to_csv(out_name)
+    else:
+        out_df.to_csv(folder+'.csv')
+
+    # return out_df

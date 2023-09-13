@@ -745,6 +745,8 @@ document.write(`
     <span class="n">parsed_config</span> <span class="o">=</span> <span class="n">set_pass_through</span><span class="p">(</span><span class="n">full_config</span><span class="p">,</span><span class="n">study_pass_through_vars</span><span class="p">,</span> <span class="n">debug</span><span class="p">)</span>
 
     <span class="c1"># -------------- generate all of the files and save the instructions</span>
+    <span class="k">if</span> <span class="ow">not</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">out_rel_path</span><span class="p">)):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_rel_path</span><span class="p">)</span>
     <span class="n">instructions</span> <span class="o">=</span> <span class="p">[</span><span class="n">make_question_page</span><span class="p">(</span>
         <span class="o">**</span><span class="n">q</span><span class="p">,</span> <span class="n">out_url</span><span class="o">=</span><span class="n">out_url</span><span class="p">,</span> <span class="n">out_rel_path</span><span class="o">=</span><span class="n">out_rel_path</span><span class="p">,</span>
           <span class="n">debug</span><span class="o">=</span><span class="n">debug</span><span class="p">,</span><span class="n">full_html</span><span class="o">=</span><span class="ow">not</span><span class="p">(</span><span class="n">fragment</span><span class="p">))</span> 

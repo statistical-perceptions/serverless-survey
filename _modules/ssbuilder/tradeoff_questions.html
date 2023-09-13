@@ -52,6 +52,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../../_static/togglebutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -161,6 +162,7 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For Developers</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../dev/questions.html">Question Types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../dev/configuration.html">Configuration Details</a></li>
 </ul>
 
@@ -344,6 +346,15 @@ document.write(`
         <span class="n">fig</span><span class="p">[</span><span class="s2">&quot;layout&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;updatemenus&quot;</span><span class="p">)</span>  <span class="c1"># optional, drop animation buttons</span>
         <span class="n">fig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="n">fixedrange</span><span class="o">=</span><span class="n">disable_zoom</span><span class="p">)</span>
         <span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="n">fixedrange</span><span class="o">=</span><span class="n">disable_zoom</span><span class="p">)</span>
+
+        <span class="c1"># infer height from data if not provided</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">y_min</span><span class="p">)</span><span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+            <span class="n">y_min</span> <span class="o">=</span> <span class="n">masked_df</span><span class="p">[</span><span class="n">y_col</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">y_max</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+
+            <span class="n">y_max</span> <span class="o">=</span> <span class="n">masked_df</span><span class="p">[</span><span class="n">y_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+            
         <span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">])</span>
         
         <span class="k">return</span> <span class="n">fig</span></div></div>
@@ -431,9 +442,9 @@ document.write(`
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">y_min</span><span class="p">)</span><span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
                 <span class="n">y_min</span> <span class="o">=</span> <span class="n">masked_df</span><span class="p">[</span><span class="n">y_col</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
 
-            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">y_min</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">y_max</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
 
-                <span class="n">y_min</span> <span class="o">=</span> <span class="n">masked_df</span><span class="p">[</span><span class="n">y_col</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+                <span class="n">y_max</span> <span class="o">=</span> <span class="n">masked_df</span><span class="p">[</span><span class="n">y_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
             <span class="c1"># set number of points in vertical line to make more hover-able locations</span>
             <span class="n">N_points</span> <span class="o">=</span> <span class="mi">100</span>

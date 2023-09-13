@@ -53,6 +53,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -164,6 +165,7 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For Developers</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dev/questions.html">Question Types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/configuration.html">Configuration Details</a></li>
 </ul>
 
@@ -311,17 +313,18 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-yaml-works">How YAML works</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#yaml-format">YAML Format</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-shared-parameters">No shared parameters</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#with-shared-parameters">With shared parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shared-parameters">Shared parameters</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuring-your-study">Configuring your study</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#page-level-settings">Page level  Settings</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#question-text">Question Text</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#figure-specific-settings">Figure specific Settings</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-level-options">Building Level Options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-level-options">Build Level Options</a></li>
 </ul>
             </nav>
         </div>
@@ -336,8 +339,9 @@ document.write(`
   <section class="tex2jax_ignore mathjax_ignore" id="working-with-configuration-files">
 <h1>Working with Configuration Files<a class="headerlink" href="#working-with-configuration-files" title="Permalink to this headline">#</a></h1>
 <p>A configuration file is yaml</p>
-<section id="how-yaml-works">
-<h2>How YAML works<a class="headerlink" href="#how-yaml-works" title="Permalink to this headline">#</a></h2>
+<section id="yaml-format">
+<h2>YAML Format<a class="headerlink" href="#yaml-format" title="Permalink to this headline">#</a></h2>
+<p>There are two supported formats for the configuration file</p>
 <section id="no-shared-parameters">
 <h3>No shared parameters<a class="headerlink" href="#no-shared-parameters" title="Permalink to this headline">#</a></h3>
 <p>This file is setup like:</p>
@@ -360,9 +364,8 @@ document.write(`
 <p>Notes:</p>
 <ul class="simple">
 <li><p>Each <code class="docutils literal notranslate"><span class="pre">name_of_varX_for_qY</span></code> has to be a variable that the <code class="docutils literal notranslate"><span class="pre">make_question_page</span></code> function accepts</p></li>
-<li><p>reference for the functions is at the top of the notebook</p></li>
-<li><p>any variables not specified will get the default value as stated inthe documentation</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">figure_values</span></code> is a special variable that takes more variables.  the nams of the fig variables are the ones for the <code class="docutils literal notranslate"><span class="pre">normal_curve_slider</span></code> function</p></li>
+<li><p>any variables not specified will get the default value as stated in the documentation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">figure_values</span></code> is a special variable that takes more variables.  the names of the fig variables are defined for each question</p></li>
 <li><p>the variables can be in any order</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">question_id</span></code> must be stated, there is no default value for it</p></li>
 <li><p>only the first variable for each question gets a <code class="docutils literal notranslate"><span class="pre">-</span></code></p></li>
@@ -370,9 +373,10 @@ document.write(`
 </ul>
 <p>Some come from the question and others are for the pate</p>
 </section>
-<section id="with-shared-parameters">
-<h3>With shared parameters<a class="headerlink" href="#with-shared-parameters" title="Permalink to this headline">#</a></h3>
-<p>To share values across question it can be set up like</p>
+<section id="shared-parameters">
+<h3>Shared parameters<a class="headerlink" href="#shared-parameters" title="Permalink to this headline">#</a></h3>
+<p>To share values across question it can be set up so that the top level is a single entry with two keys (<code class="docutils literal notranslate"><span class="pre">shared</span></code> and <code class="docutils literal notranslate"><span class="pre">unique</span></code>) where the <code class="docutils literal notranslate"><span class="pre">shared</span></code> key includes the parameter values that are to be applied to all questiona and <code class="docutils literal notranslate"><span class="pre">unique</span></code> includes a list defining individiual questions as above.  Any values defined in both, the <code class="docutils literal notranslate"><span class="pre">unique</span></code> will overwrite the <code class="docutils literal notranslate"><span class="pre">shared</span></code> value.</p>
+<p>For example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">shared</span><span class="p">:</span> 
   <span class="n">name_of_var1_shared</span><span class="p">:</span> <span class="n">value_for_var1_shared</span>
   <span class="n">name_of_var2_shared</span><span class="p">:</span> <span class="n">value_for_var2_shared</span>
@@ -389,7 +393,7 @@ document.write(`
     <span class="n">name_of_fig_var1_for_q2</span><span class="p">:</span> <span class="n">value_for_fig_var1_for_q2</span>
 </pre></div>
 </div>
-<p>This is equivalent to (but, for many questions,  more compact than)</p>
+<p>This is equivalent to (but, for large number of questions,  more compact than):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">question_id</span><span class="p">:</span> <span class="n">unique_id_for_q1</span>
   <span class="n">name_of_var4_for_q1</span><span class="p">:</span> <span class="n">value_for_var4_q1</span>
   <span class="n">name_of_var1_shared</span><span class="p">:</span> <span class="n">value_for_var1_shared</span>
@@ -411,8 +415,10 @@ document.write(`
 <section id="configuring-your-study">
 <h2>Configuring your study<a class="headerlink" href="#configuring-your-study" title="Permalink to this headline">#</a></h2>
 <p>To configure the study you will need the urls to each follow-up survey. They do not have to be fully configured first though.</p>
+<p>Each question is a single page with a figure on it.</p>
 <section id="page-level-settings">
 <h3>Page level  Settings<a class="headerlink" href="#page-level-settings" title="Permalink to this headline">#</a></h3>
+<p>These settings control the rest of the question page, other than the figure.</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
 <ul class="simple">
@@ -446,7 +452,7 @@ if true, add question_id to the passed values for all _var_names. Default is Tru
 can be changed to False if you specify the variable names directly</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pass_through_vars</span></code> : list of strings [‘id’]
 list of variables to pass through from previous to next</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">next_question</span></code> : string
+<li><p><code class="docutils literal notranslate"><span class="pre">next_question_url</span></code> : string
 question id or url for the qualtrics question</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pretty_url</span></code> : boolean {False}
 if True make pages like <code class="docutils literal notranslate"><span class="pre">/IndentiCurve/name/</span></code> instead of <code class="docutils literal notranslate"><span class="pre">/IdentiCurve/name.html</span></code></p></li>
@@ -455,14 +461,33 @@ generate a full html page or if False, generate only a segment of the page (eg f
 </ul>
 </div>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You cannot use <code class="docutils literal notranslate"><span class="pre">end</span></code> as a question ID, or <code class="docutils literal notranslate"><span class="pre">end.html</span></code> as an output file name</p>
+</div>
+</section>
+<section id="question-text">
+<h3>Question Text<a class="headerlink" href="#question-text" title="Permalink to this headline">#</a></h3>
+<p>Questions’ text goes in the page level parameter <code class="docutils literal notranslate"><span class="pre">question_text</span></code>. It may include markdown formatting to be rendered.</p>
+<p>Some key examples:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">**bold**</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*italic*</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-</span> <span class="pre">bulleted</span> <span class="pre">text</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">[link</span> <span class="pre">display</span> <span class="pre">text](url/for/link)</span></code></p></li>
+<li><p>a blank space at the end of aline will make a new paragraph</p></li>
+</ul>
 </section>
 <section id="figure-specific-settings">
 <h3>Figure specific Settings<a class="headerlink" href="#figure-specific-settings" title="Permalink to this headline">#</a></h3>
 <p>These settings vary by question type and the options are detailed on <a class="reference internal" href="questions.html"><span class="doc std std-doc">Question Types</span></a></p>
 </section>
 </section>
-<section id="building-level-options">
-<h2>Building Level Options<a class="headerlink" href="#building-level-options" title="Permalink to this headline">#</a></h2>
+<section id="build-level-options">
+<h2>Build Level Options<a class="headerlink" href="#build-level-options" title="Permalink to this headline">#</a></h2>
+<p>Serverless Survey has some settings that are for a whole study or about how to process the configuration file.</p>
+<p>These are set as CLI arguments if you build offline.  If you use our template repo, you will have a set of options for these controls in your actions tab.</p>
+<p>This is where the path to save the output html files are set as well as the url of the hosted site for generating the instructions. There is also the option to generate only a fragment or to put all questions on a single page (eg for IRB review or paper supplemental materials).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%</span><span class="k">bash</span>
@@ -489,16 +514,22 @@ ssgeneratehtml --help
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  configureation.yml assumed repo_name : string {None}     name of the repo
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  gh_org : string {None}     name of the gh org or user that owns the repo to
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  out_url : string {None}     specify if not github with org/repo gh_org :
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  build the URL debug : bool     print debuggin information or not fragment :
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  string {None}     name of the gh org or user that owns the repo to build the
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  bool     generate a fragment or not all_in_one : bool     merge files to a
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  URL debug : bool     print debuggin information or not out_rel_path : string
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  single htmlfile
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  relative path where to save the html files  fragment : bool     generate a
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  fragment or not all_in_one : bool     merge files to a single htmlfile, this
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  version will not work as as a survey
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
@@ -528,7 +559,10 @@ ssgeneratehtml --help
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -a, --all_in_one
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  --help                   Show this message and exit.
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -v, --study-pass-through-vars TEXT
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  --help                          Show this message and exit.
 </pre></div>
 </div>
 </div>
@@ -603,17 +637,18 @@ ssgeneratehtml --help
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-yaml-works">How YAML works</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#yaml-format">YAML Format</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-shared-parameters">No shared parameters</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#with-shared-parameters">With shared parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#shared-parameters">Shared parameters</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuring-your-study">Configuring your study</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#page-level-settings">Page level  Settings</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#question-text">Question Text</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#figure-specific-settings">Figure specific Settings</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-level-options">Building Level Options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-level-options">Build Level Options</a></li>
 </ul>
   </nav></div>
 

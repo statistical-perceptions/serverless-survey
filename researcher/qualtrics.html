@@ -53,6 +53,7 @@
     <script>let toggleHintHide = 'Click to hide';</script>
     <script>let toggleOpenOnPrint = 'true';</script>
     <script src="../_static/togglebutton.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
     <script src="../_static/design-tabs.js"></script>
     <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
@@ -64,7 +65,7 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'researcher/qualtrics';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Configuration Details" href="../dev/configuration.html" />
+    <link rel="next" title="Question Types" href="../dev/questions.html" />
     <link rel="prev" title="Question Types" href="questions.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="None"/>
@@ -164,6 +165,7 @@ const thebe_selector_output = ".output, .cell_output"
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">For Developers</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../dev/questions.html">Question Types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/configuration.html">Configuration Details</a></li>
 </ul>
 
@@ -311,9 +313,12 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qualtrics-ss">Qualtrics -&gt; SS</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ss-qualtrics">SS -&gt; qualtrics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-use">Basic use</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sending-the-id-from-qualtrics">Sending the ID from Qualtrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recieving-data-into-qualtrics">Recieving Data into Qualtrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#branching-to-different-ss-questions-based-on-qualtrics-answers">Branching to different ss questions based on qualtrics answers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#branching-to-different-ss-questions-based-on-embedded-data">Branching to different ss questions based on embedded data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#semi-automatic-forwarding-to-different-qustions">Semi-automatic forwarding to different qustions</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qualtrics-help">Qualtrics Help</a></li>
@@ -334,23 +339,22 @@ document.write(`
 <p class="admonition-title">Important</p>
 <p>This is the base documentation that may need updates</p>
 </div>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">#</a></h2>
+<section id="basic-use">
+<h2>Basic use<a class="headerlink" href="#basic-use" title="Permalink to this headline">#</a></h2>
 <ol class="arabic simple">
-<li><p>the first qualtrics survey sends data to normal curve only</p></li>
-<li><p>middle ones receive data from and send data to the normal curve</p></li>
+<li><p>the first qualtrics survey sends embedded data via forwarding only</p></li>
+<li><p>middle ones receive data and send data</p></li>
 <li><p>the last one receives data only</p></li>
 </ol>
-</section>
-<section id="qualtrics-ss">
-<h2>Qualtrics -&gt; SS<a class="headerlink" href="#qualtrics-ss" title="Permalink to this headline">#</a></h2>
+<section id="sending-the-id-from-qualtrics">
+<h3>Sending the ID from Qualtrics<a class="headerlink" href="#sending-the-id-from-qualtrics" title="Permalink to this headline">#</a></h3>
 <ol class="arabic simple">
 <li><p>Add an embedded data block with the identifier to forward (eg panel ID or Response ID)</p></li>
 <li><p>redirect end of survey to a url</p></li>
 <li><p>embed the response id in the forwarding url:</p></li>
 </ol>
 <p>Template</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://statistical-perceptions.github.io/IdentiCurve/&lt;question_out_html_file&gt;.html?id=&lt;qualtrics piped text)
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://statistical-perceptions.github.io/IdentiCurve/&lt;question_out_html_file&gt;.html?id=&lt;qualtrics piped text&gt;
 </pre></div>
 </div>
 <p>Example</p>
@@ -362,25 +366,81 @@ document.write(`
 <ul class="simple">
 <li><p>if needed, we can pass more than a single unique identifier on, but that requires code changes</p></li>
 </ul>
-<section id="ss-qualtrics">
-<h3>SS -&gt; qualtrics<a class="headerlink" href="#ss-qualtrics" title="Permalink to this headline">#</a></h3>
+</section>
+<section id="recieving-data-into-qualtrics">
+<h3>Recieving Data into Qualtrics<a class="headerlink" href="#recieving-data-into-qualtrics" title="Permalink to this headline">#</a></h3>
 <ol class="arabic simple">
-<li><p>set up embedded data as the first block on the workflows tab</p></li>
+<li><p>set up embedded data as the first block on the workflows tab. set the variables as per the instructions output</p></li>
 <li><p>(if applicable) use piped text to refer to those values in the question text</p></li>
 <li><p>(optional) add a branch after the embedded data to have people skip the survey “if id is Equal to demo”</p></li>
 </ol>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.qualtrics.com/support/survey-platform/survey-module/survey-flow/standard-elements/embedded-data/#SettingValuesFromTheSurveyURL">getting data from url</a></p></li>
-<li></li>
 </ul>
+</section>
+<section id="branching-to-different-ss-questions-based-on-qualtrics-answers">
+<h3>Branching to different ss questions based on qualtrics answers<a class="headerlink" href="#branching-to-different-ss-questions-based-on-qualtrics-answers" title="Permalink to this headline">#</a></h3>
+<ol class="arabic simple">
+<li><p>on the survey flow tab add a branch</p></li>
+<li><p>set the condition to be based on a question</p></li>
+<li><p>add the url to forward to</p></li>
+<li><p>(if applicable) add the variable value to the forward url</p></li>
+</ol>
+<p>Template</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://statistical-perceptions.github.io/IdentiCurve/&lt;question_out_html_file&gt;.html?id=&lt;qualtrics piped text&gt;&amp;var=value
+</pre></div>
+</div>
+<p>Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://statistical-perceptions.github.io/sample-nobackend/?id=${e://Field/ResponseID}&amp;group=w
+</pre></div>
+</div>
+<p>in this case, I only had one question page so there is no question_id set and I used the ResponseID feild.</p>
+</section>
+<section id="branching-to-different-ss-questions-based-on-embedded-data">
+<h3>Branching to different ss questions based on embedded data<a class="headerlink" href="#branching-to-different-ss-questions-based-on-embedded-data" title="Permalink to this headline">#</a></h3>
+<ol class="arabic simple">
+<li><p>make sure the embedded data received includes the pass through variable</p></li>
+<li><p>on the survey flow tab add a branch</p></li>
+<li><p>set the condition to be based on embedded data and choose the values</p></li>
+<li><p>add the url to forward to</p></li>
+<li><p>(if applicable) add the variable value to the forward url</p></li>
+</ol>
+<p>Template</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://org-or-user.github.io/repo/question_out_html_file.html?id=&lt;qualtrics piped text&gt;&amp;var=value
+</pre></div>
+</div>
+<p>Example</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://statistical-perceptions.github.io/IdentiCurve/nc2t1w.html?id=${e://Field/ResponseID}&amp;group=${e://Field/group}
+</pre></div>
+</div>
+</section>
+<section id="semi-automatic-forwarding-to-different-qustions">
+<h3>Semi-automatic forwarding to different qustions<a class="headerlink" href="#semi-automatic-forwarding-to-different-qustions" title="Permalink to this headline">#</a></h3>
+<p>In order to have a survey where there are different versions of the questions for different participants depending on a response of a question, set up a question in qualtrics where the response will be the “logic variable.” Then make it so that the logic variable is passed along with the ID and its values appear in the url so that the variable in piped text can make it work.</p>
+<ol class="arabic simple">
+<li><p>set up configurations so that the logic variable values are in the question ids (or html file names)</p></li>
+<li><p>make sure embedded data received includes the variable used for logic</p></li>
+<li><p>set up the url like (for <code class="docutils literal notranslate"><span class="pre">group</span></code> as the logic variable)</p></li>
+</ol>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://ghorg.github.io/repo/page_url${e://Field/logicvariable}.html?id=${e://Field/ResponseID}&amp;group=${e://Field/logicvariable}
+</pre></div>
+</div>
+<p>For example if the following is in qualtrics as the forward url</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://statistical-perceptions.github.io/IdentiCurve/nc2t1${e://Field/group}.html?id=${e://Field/ResponseID}&amp;group=${e://Field/group}
+</pre></div>
+</div>
+<p>when <code class="docutils literal notranslate"><span class="pre">group=a</span></code> the url will become</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>https://statistical-perceptions.github.io/IdentiCurve/nc2t1a.html?id=RH2904&amp;group=a
+</pre></div>
+</div>
 </section>
 </section>
 <section id="qualtrics-help">
 <h2>Qualtrics Help<a class="headerlink" href="#qualtrics-help" title="Permalink to this headline">#</a></h2>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.qualtrics.com/support/survey-platform/survey-module/editing-questions/piped-text/piped-text-overview/">Piped text</a></p></li>
-<li><p><a class="reference external" href="https://www.qualtrics.com/support/survey-platform/survey-module/editing-questions/question-types-guide/specialty-questions/constant-sum/">sum question</a></p></li>
-<li><p><a class="reference external" href="https://www.qualtrics.com/support/survey-platform/survey-module/survey-flow/standard-elements/embedded-data/">embedded data</a></p></li>
+<li><p><a class="reference external" href="https://www.qualtrics.com/support/survey-platform/survey-module/survey-flow/standard-elements/passing-information-through-query-strings/">Passing with Query Strings</a>: about the url</p></li>
+<li><p><a class="reference external" href="https://www.qualtrics.com/support/survey-platform/survey-module/editing-questions/piped-text/piped-text-overview/">Piped text</a>: about getting and formatting variables for the url or for using responses to modify qualtrics questions</p></li>
+<li><p><a class="reference external" href="https://www.qualtrics.com/support/survey-platform/survey-module/survey-flow/standard-elements/embedded-data/">embedded data</a>: for storing data to send and receive it</p></li>
 </ul>
 </section>
 </section>
@@ -426,11 +486,11 @@ document.write(`
       </div>
     </a>
     <a class="right-next"
-       href="../dev/configuration.html"
+       href="../dev/questions.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Configuration Details</p>
+        <p class="prev-next-title">Question Types</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -452,9 +512,12 @@ document.write(`
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qualtrics-ss">Qualtrics -&gt; SS</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ss-qualtrics">SS -&gt; qualtrics</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-use">Basic use</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sending-the-id-from-qualtrics">Sending the ID from Qualtrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recieving-data-into-qualtrics">Recieving Data into Qualtrics</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#branching-to-different-ss-questions-based-on-qualtrics-answers">Branching to different ss questions based on qualtrics answers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#branching-to-different-ss-questions-based-on-embedded-data">Branching to different ss questions based on embedded data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#semi-automatic-forwarding-to-different-qustions">Semi-automatic forwarding to different qustions</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qualtrics-help">Qualtrics Help</a></li>

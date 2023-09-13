@@ -17,8 +17,9 @@ kernelspec:
 A configuration file is yaml
 
 
-## How YAML works 
+## YAML Format
 
+There are two supported formats for the configuration file
 
 ### No shared parameters 
 
@@ -43,9 +44,8 @@ This file is setup like:
 
 Notes: 
 - Each `name_of_varX_for_qY` has to be a variable that the `make_question_page` function accepts
-- reference for the functions is at the top of the notebook
-- any variables not specified will get the default value as stated inthe documentation
-- `figure_values` is a special variable that takes more variables.  the nams of the fig variables are the ones for the `normal_curve_slider` function
+- any variables not specified will get the default value as stated in the documentation
+- `figure_values` is a special variable that takes more variables.  the names of the fig variables are defined for each question
 - the variables can be in any order
 - `question_id` must be stated, there is no default value for it 
 - only the first variable for each question gets a `-`
@@ -53,9 +53,13 @@ Notes:
 
 Some come from the question and others are for the pate
 
-### With shared parameters 
 
-To share values across question it can be set up like
+### Shared parameters 
+
+To share values across question it can be set up so that the top level is a single entry with two keys (`shared` and `unique`) where the `shared` key includes the parameter values that are to be applied to all questiona and `unique` includes a list defining individiual questions as above.  Any values defined in both, the `unique` will overwrite the `shared` value.  
+
+
+For example: 
 ```
 shared: 
   name_of_var1_shared: value_for_var1_shared
@@ -73,7 +77,7 @@ unique:
     name_of_fig_var1_for_q2: value_for_fig_var1_for_q2
 ```
 
-This is equivalent to (but, for many questions,  more compact than)
+This is equivalent to (but, for large number of questions,  more compact than):
 
 ```
 - question_id: unique_id_for_q1
@@ -96,7 +100,11 @@ This is equivalent to (but, for many questions,  more compact than)
 
 To configure the study you will need the urls to each follow-up survey. They do not have to be fully configured first though. 
 
+Each question is a single page with a figure on it. 
+
 ### Page level  Settings
+
+These settings control the rest of the question page, other than the figure. 
 
 ```{code-cell} ipython3
 :tags: ["remove-input"]
@@ -107,11 +115,33 @@ from IPython.display import Markdown
 Markdown(ssbuilder.md_params(ssbuilder.builder.make_question_page))
 ```
 
+```{warning}
+You cannot use `end` as a question ID, or `end.html` as an output file name
+```
+
+### Question Text
+
+Questions' text goes in the page level parameter `question_text`. It may include markdown formatting to be rendered.  
+
+Some key examples:
+- `**bold**`
+- `*italic*`
+- `- bulleted text`
+- `[link display text](url/for/link)`
+- a blank space at the end of aline will make a new paragraph
+
+
 ### Figure specific Settings
 
 These settings vary by question type and the options are detailed on [](questions.md)
 
-## Building Level Options
+## Build Level Options
+
+Serverless Survey has some settings that are for a whole study or about how to process the configuration file. 
+
+These are set as CLI arguments if you build offline.  If you use our template repo, you will have a set of options for these controls in your actions tab.  
+
+This is where the path to save the output html files are set as well as the url of the hosted site for generating the instructions. There is also the option to generate only a fragment or to put all questions on a single page (eg for IRB review or paper supplemental materials). 
 
 ```{code-cell} ipython3
 %%bash

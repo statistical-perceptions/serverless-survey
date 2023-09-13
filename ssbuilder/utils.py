@@ -170,9 +170,16 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None):
 
     data_frame_list = [pd.read_csv(os.path.join(folder,file)) for file in file_list]
 
+    #ensure the merge_on column exists in all files
+    for df,source_file in (data_frame_list,file_list):
+        if not(merge_on in df.columns):
+            click.echo(source_file + 'does not have column ' + merge_on)
+
     # merge the first two
     out_df = pd.merge(data_frame_list[0],data_frame_list[0],
                       suffixes=('_'+file_list[0][:-4],'_'+file_list[1][:-4]),on=merge_on)
+    
+    
     
     # merge the rest onto those two
     if len(file_list) >2:
@@ -180,7 +187,6 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None):
             # 
             out_df = pd.merge(out_df, next_df, on = merge_on, how='outer',suffixes=('', '_'+source_file[:-4]))
         # 
-
     
     # use provided name if provided or folder name otherwise 
     if out_name:

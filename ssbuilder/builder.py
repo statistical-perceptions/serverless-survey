@@ -478,6 +478,8 @@ def generate_from_configuration(config_file=None,repo_name=None,
     parsed_config = set_pass_through(full_config,study_pass_through_vars, debug)
 
     # -------------- generate all of the files and save the instructions
+    if not(os.path.isdir(out_rel_path)):
+        os.makedirs(out_rel_path)
     instructions = [make_question_page(
         **q, out_url=out_url, out_rel_path=out_rel_path,
           debug=debug,full_html=not(fragment)) 

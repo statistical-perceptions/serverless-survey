@@ -150,9 +150,10 @@ def calculate_query_length(filename,vars_only=False,
 
 @click.command()
 @click.argument('folder', type=click.Path(exists=True))
-@click.option('-m','--merge_on',default='id')
-@click.option('-o','--out_name')
-def merge_dir_csvs(folder,merge_on='id',out_name=None):
+@click.option('-m', '--merge-on', default='id')
+@click.option('-n', '--num-header-rows', default=3)
+@click.option('-o','--out-name')
+def merge_dir_csvs(folder,merge_on='id',out_name=None, num_header_rows=3):
     '''
     merge all csvs in a folder into a single CSV file
     
@@ -164,11 +165,13 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None):
         column shared across all files, default id
     out_name : string
         name to use the file, if not provided uses folder.csv
+    num_header_rows : int
+        number of rows to use as header in each file, must be the same across all files
     '''
     # get all fo the files
     file_list= [file for file in os.listdir(folder) if file[-4:]=='.csv']
 
-    data_frame_list = [pd.read_csv(os.path.join(folder,file)) for file in file_list]
+    data_frame_list = [pd.read_csv(os.path.join(folder,file),header=num_header_rows) for file in file_list]
 
     #ensure the merge_on column exists in all files
     for df,source_file in (data_frame_list,file_list):

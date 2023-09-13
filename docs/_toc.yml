@@ -6,10 +6,11 @@ root: intro
 parts:
   - caption: For Researchers
     chapters:
+    - file: researcher/overivew
     - file: researcher/configuration_yaml
     - file: researcher/questions
     - file: researcher/qualtrics
   - caption: For Developers
     chapters:
-    - file: dev/question
+    - file: dev/questions
     - file: dev/configuration 

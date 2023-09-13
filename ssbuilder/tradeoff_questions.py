@@ -79,6 +79,15 @@ class TradeoffBar():
         fig["layout"].pop("updatemenus")  # optional, drop animation buttons
         fig.update_xaxes(fixedrange=disable_zoom)
         fig.update_yaxes(fixedrange=disable_zoom)
+
+        # infer height from data if not provided
+        if type(y_min)== type(None):
+            y_min = masked_df[y_col].min()
+
+        if type(y_max) == type(None):
+
+            y_max = masked_df[y_col].max()
+            
         fig.update_yaxes(range=[y_min, y_max])
         
         return fig
@@ -166,9 +175,9 @@ class TradeoffLine():
             if type(y_min)== type(None):
                 y_min = masked_df[y_col].min()
 
-            if type(y_min) == type(None):
+            if type(y_max) == type(None):
 
-                y_min = masked_df[y_col].min()
+                y_max = masked_df[y_col].max()
 
             # set number of points in vertical line to make more hover-able locations
             N_points = 100

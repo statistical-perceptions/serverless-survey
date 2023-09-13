@@ -342,19 +342,40 @@ def set_pass_through(config_dict_list,
 
 def get_file_name(question_dict = None, out_html_file=None, question_id = None):
     '''
-    get the file name for a question
+    get the file name for a question from feild with processing or question id
+
+    Parameters
+    ----------
+    question_dict : dictionary 
+        all question informtation including both `out_file_html` and `question_id`
+    out_html_file : string
+        just the one parameter from settings, this will be used if provided, can be input
+    in any case and with or without extension
+    question_id : string
+        the question id this will be used if `out_html_file` not provided
+
+    Returns
+    -------
+    out_file_html : string
+        all lowercase file name with the .html extension added / will be removed and spaces 
+    replaced with -
     '''
+    # if dictionary proved, pull out required parameters
     if question_dict:
+        #  this is a required parameter, okay to error if missing
         question_id = question_dict['question_id']
+        #  check if this is in and overwrite if provided, otherwise keep default None 
         if 'out_file_html' in question_dict.keys():
             out_html_file = question_dict['out_file_html']
-        
-
+    
+    #  set base out_html_file
     if not (out_html_file):
         out_html_file = question_id.lower() + '.html'
     elif not (out_html_file[-5:] == '.html'):
         out_html_file += '.html'
 
+    # clean up formatting
+    # TODO: this is pretty minimal fixing based on seen-to-date problematic choices used; could be more robus
     out_html_file = out_html_file.replace('/', '').replace(' ', '-').lower()
 
     return out_html_file

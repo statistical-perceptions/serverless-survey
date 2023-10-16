@@ -188,28 +188,19 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
 
     
     data_frame_list = [pd.read_csv(os.path.join(folder, file),
-                                       header=header, skiprows=lambda x: x in skip_row_list)
+                                       header=header, 
+                                       skiprows=lambda x: x in skip_row_list
+                                       ).dropna(subset=['id']).drop_duplicates(subset=['id'])
                            for file in file_list]
     
     if verbose:
-        # data_frame_list = []
-
-        # for file in file_list:
-        #     cur_file_path = os.path.join(folder, file)
-        #     click.echo('attempting to load ' + cur_file_path)
-        #     click.echo(type(cur_file_path))
-        #     tmp = pd.read_csv(cur_file_path)
-        #     click.echo('defualt read passes')
-        #     pd.read_csv(cur_file_path,header=header)
-        #     click.echo('header only works')
-        #     data_frame_list.append(pd.read_csv(cur_file_path,
-        #                                        header=header, skiprows=lambda x: x in skip_row_list))
 
         click.echo('loaded files: ' + str(len(data_frame_list)))
     
         
 
     #ensure the merge_on column exists in all files
+    # unique_ids = []
     for df,source_file in zip(data_frame_list,file_list):
         if not(merge_on in df.columns):
             click.echo(source_file + 'does not have column ' + merge_on)
@@ -224,7 +215,7 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
     if verbose:
         click.echo(
             'first pair (' + file_list[0] + ', ' + file_list[1] + ') merged')
-    
+    # TODO test if id is not unique
     # merge the rest onto those two
     if len(file_list) >2:
         for next_df,source_file in zip(data_frame_list[2:],file_list[2:]):
@@ -234,7 +225,7 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
                 msg = 'adding {source_file} ({r},{c})'
                 click.echo(msg.format( source_file=source_file,r=r,c=c))
 
-            out_df = pd.merge(out_df, next_df, on = merge_on, how='inner',suffixes=('', '_'+source_file[:-4]))
+            out_df = pd.merge(out_df, next_df, on = merge_on, how='outer',suffixes=('', '_'+source_file[:-4]))
 
             if verbose:
                 r,c = out_df.shape

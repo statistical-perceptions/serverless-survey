@@ -421,64 +421,44 @@ document.write(`
 <p>These settings control the rest of the question page, other than the figure.</p>
 <div class="cell tag_remove-input docutils container">
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">ValueError</span><span class="g g-Whitespace">                                </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
-<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span> <span class="nn">ssbuilder</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="c1"># import markdown</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Markdown</span>
-
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">ssbuilder</span><span class="o">/</span><span class="fm">__init__</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">4</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span> <span class="nn">.single_normal_curve</span> <span class="kn">import</span> <span class="n">NormalCurveSlider</span>
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span> <span class="nn">.tradeoff_questions</span> <span class="kn">import</span> <span class="n">TradeoffLine</span><span class="p">,</span> <span class="n">TradeoffBar</span>
-<span class="ne">----&gt; </span><span class="mi">4</span> <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span>  <span class="n">md_params</span><span class="p">,</span> <span class="n">check_query_length</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">merge_dir_csvs</span>
-
-<span class="n">File</span> <span class="o">/</span><span class="n">opt</span><span class="o">/</span><span class="n">hostedtoolcache</span><span class="o">/</span><span class="n">Python</span><span class="o">/</span><span class="mf">3.8.18</span><span class="o">/</span><span class="n">x64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="mf">.8</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">ssbuilder</span><span class="o">/</span><span class="n">utils</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">159</span>
-<span class="g g-Whitespace">    </span><span class="mi">146</span>         <span class="n">est_chars</span> <span class="o">+=</span> <span class="n">prefix_length</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>     <span class="k">return</span> <span class="n">est_chars</span>
-<span class="g g-Whitespace">    </span><span class="mi">151</span> <span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">152</span> <span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s1">&#39;folder&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">click</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">exists</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-<span class="g g-Whitespace">    </span><span class="mi">153</span> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-m&#39;</span><span class="p">,</span> <span class="s1">&#39;--merge-on&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">154</span> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-h&#39;</span><span class="p">,</span> <span class="s1">&#39;--header&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">155</span> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-s&#39;</span><span class="p">,</span> <span class="s1">&#39;--skip-row&#39;</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">156</span> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-o&#39;</span><span class="p">,</span><span class="s1">&#39;--out-name&#39;</span><span class="p">,</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">157</span> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-v&#39;</span><span class="p">,</span><span class="s1">&#39;--verbose&#39;</span><span class="p">,</span><span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">158</span> <span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s1">&#39;-c&#39;</span><span class="p">,</span><span class="s1">&#39;--complete-only&#39;</span><span class="p">,</span><span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">159</span> <span class="k">def</span> <span class="nf">merge_dir_csvs</span><span class="p">(</span><span class="n">folder</span><span class="p">,</span><span class="n">merge_on</span><span class="o">=</span><span class="s1">&#39;id&#39;</span><span class="p">,</span><span class="n">out_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">skip_row_list</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span>
-<span class="g g-Whitespace">    </span><span class="mi">160</span>                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip_row</span> <span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">complete_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">161</span><span class="w">     </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="g g-Whitespace">    </span><span class="mi">162</span><span class="sd">     merge all csvs in a folder into a single CSV file</span>
-<span class="g g-Whitespace">    </span><span class="mi">163</span><span class="sd">     </span>
-<span class="sd">   (...)</span>
-<span class="g g-Whitespace">    </span><span class="mi">179</span><span class="sd">         print extra information out</span>
-<span class="g g-Whitespace">    </span><span class="mi">180</span><span class="sd">     &#39;&#39;&#39;</span>
-<span class="g g-Whitespace">    </span><span class="mi">181</span>     <span class="k">if</span> <span class="n">skip_row</span><span class="p">:</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/click/decorators.py:373,</span> in <span class="ni">option.&lt;locals&gt;.decorator</span><span class="nt">(f)</span>
-<span class="g g-Whitespace">    </span><span class="mi">372</span> <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">FC</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FC</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">373</span>     <span class="n">_param_memo</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="bp">cls</span><span class="p">(</span><span class="n">param_decls</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">))</span>
-<span class="g g-Whitespace">    </span><span class="mi">374</span>     <span class="k">return</span> <span class="n">f</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/click/core.py:2536,</span> in <span class="ni">Option.__init__</span><span class="nt">(self, param_decls, show_default, prompt, confirmation_prompt, prompt_required, hide_input, is_flag, flag_value, multiple, count, allow_from_autoenv, type, help, hidden, show_choices, show_envvar, **attrs)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2533</span>     <span class="n">help</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">cleandoc</span><span class="p">(</span><span class="n">help</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2535</span> <span class="n">default_is_missing</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span>
-<span class="ne">-&gt; </span><span class="mi">2536</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">param_decls</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">,</span> <span class="n">multiple</span><span class="o">=</span><span class="n">multiple</span><span class="p">,</span> <span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2538</span> <span class="k">if</span> <span class="n">prompt</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">2539</span>     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-
-<span class="nn">File /opt/hostedtoolcache/Python/3.8.18/x64/lib/python3.8/site-packages/click/core.py:2151,</span> in <span class="ni">Parameter.__init__</span><span class="nt">(self, param_decls, type, required, default, callback, nargs, multiple, metavar, expose_value, is_eager, envvar, shell_complete)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2149</span>         <span class="n">check_default</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">_check_iter</span><span class="p">(</span><span class="n">check_default</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">2150</span>     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-<span class="ne">-&gt; </span><span class="mi">2151</span>         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-<span class="g g-Whitespace">   </span><span class="mi">2152</span>             <span class="s2">&quot;&#39;default&#39; must be a list when &#39;multiple&#39; is true.&quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">2153</span>         <span class="p">)</span> <span class="kn">from</span> <span class="kc">None</span>
-<span class="g g-Whitespace">   </span><span class="mi">2155</span> <span class="c1"># Can be None for multiple with empty default.</span>
-<span class="g g-Whitespace">   </span><span class="mi">2156</span> <span class="k">if</span> <span class="n">nargs</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">check_default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-
-<span class="ne">ValueError</span>: &#39;default&#39; must be a list when &#39;multiple&#39; is true.
-</pre></div>
-</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">question_id</span></code> : string {required}
+name for the question internally</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">figure_type</span></code> : string
+string name of valid plot type in ssbuilder</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">figure_values</span></code> : dictionary
+parameters to pass to plotting function</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">page_title</span></code> : string
+what to show in the tab title default = ‘Normal Curve Question’,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">question_text</span></code> : string
+the text of the questions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">confirm_message</span></code> : text
+prompt for confirmation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">skip_message</span></code> : text
+prompt for skipping</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">button_text</span></code> : string
+text on button</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">out_html_file</span></code> : string
+name fo the html file, that will be in the url for the participant
+if not passed will add “.html” to the questionid</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">out_rel_path</span></code> : string or file buffer
+where to write the files.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">logging_vars</span></code> : dictionary
+dictionary of names for the variable types the specific question requires</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">confirm_var_name</span></code> : string {‘confirm’}
+name for the variable, if not passed will be question_id + ‘confirm’  +question_id</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">var_name_suffix</span></code> : boolean {True}
+if true, add question_id to the passed values for all _var_names. Default is True,
+can be changed to False if you specify the variable names directly</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pass_through_vars</span></code> : list of strings [‘id’]
+list of variables to pass through from previous to next</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_question_url</span></code> : string
+question id or url for the qualtrics question</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pretty_url</span></code> : boolean {False}
+if True make pages like <code class="docutils literal notranslate"><span class="pre">/IndentiCurve/name/</span></code> instead of <code class="docutils literal notranslate"><span class="pre">/IdentiCurve/name.html</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">full_html</span></code> : boolean {True}
+generate a full html page or if False, generate only a segment of the page (eg for combining or embedding)</p></li>
+</ul>
 </div>
 </div>
 <div class="admonition warning">
@@ -512,6 +492,77 @@ document.write(`
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%</span><span class="k">bash</span>
 ssgeneratehtml --help
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Usage: ssgeneratehtml [OPTIONS]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Generate html files from a configuration file
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  Parameters ---------- config_file : string or None     file name, if none,
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  configureation.yml assumed repo_name : string {None}     name of the repo
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  out_url : string {None}     specify if not github with org/repo gh_org :
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  string {None}     name of the gh org or user that owns the repo to build the
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  URL debug : bool     print debuggin information or not out_rel_path : string
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  relative path where to save the html files  fragment : bool     generate a
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  fragment or not all_in_one : bool     merge files to a single htmlfile, this
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  version will not work as as a survey
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Options:
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -f, --config-file TEXT
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -p, --out_rel_path TEXT
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -r, --repo_name TEXT
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -o, --gh_org TEXT
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -d, --debug
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  --fragment
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -a, --all_in_one
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  -v, --study-pass-through-vars TEXT
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>  --help                          Show this message and exit.
 </pre></div>
 </div>
 </div>

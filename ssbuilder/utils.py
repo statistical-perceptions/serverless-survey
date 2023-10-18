@@ -155,8 +155,9 @@ def calculate_query_length(filename,vars_only=False,
 @click.option('-s', '--skip-row', multiple=True, type=int)
 @click.option('-o','--out-name',default=None)
 @click.option('-v','--verbose',is_flag=True)
+@click.option('-c','--complete-only',is_flag=True)
 def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[1,2],
-                   verbose=False, skip_row =None):
+                   verbose=False, skip_row =None,complete_only=False):
     '''
     merge all csvs in a folder into a single CSV file
     
@@ -179,6 +180,11 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
     '''
     if skip_row:
         skip_row_list = skip_row
+
+    if complete_only:
+        merge_type = 'inner'
+    else:
+        merge_type = 'outer'
     
     # get all fo the files
     file_list= sorted([file for file in os.listdir(folder) if file[-4:]=='.csv'])
@@ -190,7 +196,7 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
     data_frame_list = [pd.read_csv(os.path.join(folder, file),
                                        header=header, 
                                        skiprows=lambda x: x in skip_row_list
-                                       ).dropna(subset=['id']).drop_duplicates(subset=['id'])
+                                       ).dropna(subset=[merge_on]).drop_duplicates(subset=[merge_on])
                            for file in file_list]
     
     if verbose:
@@ -209,8 +215,10 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
         click.echo('all have the merge column')
 
     # merge the first two
-    out_df = pd.merge(data_frame_list[0],data_frame_list[1],
-                      suffixes=('_'+file_list[0][:-4],'_'+file_list[1][:-4]),on=merge_on)
+    #   use source data file as suffix for all columns that repeat
+    out_df = pd.merge(data_frame_list[0], data_frame_list[1], how=merge_type,
+                      suffixes=('_'+file_list[0][:-4],'_'+file_list[1][:-4]),
+                      on=merge_on)
     
     if verbose:
         click.echo(
@@ -225,7 +233,10 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
                 msg = 'adding {source_file} ({r},{c})'
                 click.echo(msg.format( source_file=source_file,r=r,c=c))
 
-            out_df = pd.merge(out_df, next_df, on = merge_on, how='outer',suffixes=('', '_'+source_file[:-4]))
+            # merge the previous with the new one, 
+            #  first suffix blank because it's many sub-frames that have already been merged
+            out_df = pd.merge(out_df, next_df, on = merge_on, how=merge_type,
+                              suffixes=('', '_'+source_file[:-4]))
 
             if verbose:
                 r,c = out_df.shape

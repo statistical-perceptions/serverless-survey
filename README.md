@@ -6,6 +6,12 @@ This package is designed to build data visualizations as survey questions withou
 
 In this case start from the documentation and use the [ss-template](template) repo to get started. 
 
+## Running without clone
+
+```
+pip install git+https://github.com/statistical-perceptions/serverless-survey.git
+```
+
 
 ## For Developers
 

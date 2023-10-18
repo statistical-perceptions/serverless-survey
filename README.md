@@ -9,7 +9,7 @@ In this case start from the documentation and use the [ss-template](template) re
 ## Running without clone
 
 ```
-pip install git+https://github.com/statistical-perceptions/serverless-survey.git
+pip install --upgrade git+https://github.com/statistical-perceptions/serverless-survey.git
 ```
 
 

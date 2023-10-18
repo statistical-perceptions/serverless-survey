@@ -150,17 +150,33 @@ def calculate_query_length(filename,vars_only=False,
 
 @click.command()
 @click.argument('folder', type=click.Path(exists=True))
-@click.option('-m', '--merge-on', default=['id'], multiple=True)
-@click.option('-h', '--header', default=0)
-@click.option('-s', '--skip-row', multiple=True, type=int)
-@click.option('-o','--out-name',default=None)
-@click.option('-v','--verbose',is_flag=True)
-@click.option('-c','--complete-only',is_flag=True)
-def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[1,2],
+@click.option('-m', '--merge-on', default=['id'], multiple=True, 
+              help='columns to merge on, if multiple pass each one with the option')
+@click.option('-h', '--header', default=0,
+              help='row number to use as the header, starting from 0')
+@click.option('-s', '--skip-row', multiple=True, type=int, default=[1,2],
+              help='row numbers to skip, counting from 0, passed 1 value to each flag. default [1,2]')
+@click.option('-o','--out-name',default=None,
+              help='file name to save new csv to, if not passed, folder name is used')
+@click.option('-v','--verbose',is_flag=True,
+              help = 'show details of process for debugging purposes')
+@click.option('-c','--complete-only',is_flag=True,
+              help='flag to keep only rows that exist in all files (if passed, uses inner merge, otherwise outer)')
+def cmd_merge_dir_csvs(folder, merge_on, out_name, header,
+                        verbose, skip_row, complete_only):
+    '''
+    merge all csvs in a folder into a single CSV file, with new columns ordered by 
+    what source file they came from alphabetically
+    '''
+    merge_dir_csvs(folder, merge_on, out_name, header,
+                   verbose, skip_row, complete_only)
+
+def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, 
                    verbose=False, skip_row =None,complete_only=False):
     '''
-    merge all csvs in a folder into a single CSV file
-    
+    merge all csvs in a folder into a single CSV file, with new columns ordered by 
+    what source file they came from alphabetically
+
     Parameters
     ----------
     folder : string
@@ -169,24 +185,24 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
         column shared across all files, default id
     out_name : string
         name to use the file, if not provided uses folder.csv
-    skip_row_list : list
-        rows by index to skip
     header : int
         row to treat as the header (or anything that can be passed to pd.read_csv header)
     skip_row : int
-        for click same as above
-    verbose : bol
-        print extra information out
+        rows to skip, as a list (passed one at a time using multiple uses of the flag)
+    verbose : bool
+        print extra information out for debugging
+    complete_only : bool
+        if True use an inner merge, if not use outer merge
     '''
-    if skip_row:
-        skip_row_list = skip_row
+    
 
+    # parse compelte only into merge type
     if complete_only:
         merge_type = 'inner'
     else:
         merge_type = 'outer'
     
-    # get all fo the files
+    # get all fo the files, sort alphabetically
     file_list= sorted([file for file in os.listdir(folder) if file[-4:]=='.csv'])
     if verbose:
         click.echo('found files: ' + str(len(file_list)) )
@@ -194,10 +210,10 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
 
     # load all of the datafiles, applying the same skip and header to each file
     # drop any rows that have no value for the merge column
-    #  drop any duplicat values for the merge column
+    #  drop any duplicate values for the merge columns
     data_frame_list = [pd.read_csv(os.path.join(folder, file),
                                        header=header, 
-                                       skiprows=lambda x: x in skip_row_list
+                                       skiprows=lambda x: x in skip_row
                                        ).dropna(subset=merge_on).drop_duplicates(subset=merge_on)
                            for file in file_list]
     
@@ -209,9 +225,11 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
     #ensure the merge_on column exists in all files
     # unique_ids = []
     for df,source_file in zip(data_frame_list,file_list):
+        #  check each merge column
         for merge_col in merge_on:
             if not(merge_col in df.columns):
                 click.echo(source_file + 'does not have column ' + merge_col)
+                # will errror out later, but this allows full list or problems to be printed
     
     if verbose:
         click.echo('all have the merge column')
@@ -225,11 +243,11 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
     if verbose:
         click.echo(
             'first pair (' + file_list[0] + ', ' + file_list[1] + ') merged')
-    # TODO test if id is not unique
-    # merge the rest onto those two
+    
+    # if more, keep merging
     if len(file_list) >2:
         for next_df,source_file in zip(data_frame_list[2:],file_list[2:]):
-            # 
+            # note the size before merging for debugging
             if verbose:
                 r,c = next_df.shape
                 msg = 'adding {source_file} ({r},{c})'
@@ -239,25 +257,30 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
             #  first suffix blank because it's many sub-frames that have already been merged
             out_df = pd.merge(out_df, next_df, on = merge_on, how=merge_type,
                               suffixes=('', '_'+source_file[:-4]))
-
+            
+            #  describe total size if successful in debug mode
             if verbose:
                 r,c = out_df.shape
                 added_msg = 'added {source_file} total size is now ({r},{c})'
                 click.echo(added_msg.format(source_file=source_file, r=r, c=c))
-        # 
     
+    
+    # note that staring to save
     if verbose:
         click.echo('all merged, saving next')
-    # use provided name if provided or folder name otherwise 
-    if out_name:
-         
+
+    
+    # formate file name for saving use provided name if provided or folder name otherwise 
+    if out_name:    
         if not(out_name[-4:] == '.csv'):
             out_name += '.csv'
     else:
         out_name = folder.strip('/')+'.csv'
 
+    # save
     out_df.to_csv(out_name)
 
+    # report success, always
     done_msg = 'wrote out ({r},{c}) to {out_name}'
     r,c =out_df.shape
     click.echo(done_msg.format(out_name=out_name,r=r,c=c))

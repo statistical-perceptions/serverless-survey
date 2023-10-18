@@ -150,7 +150,7 @@ def calculate_query_length(filename,vars_only=False,
 
 @click.command()
 @click.argument('folder', type=click.Path(exists=True))
-@click.option('-m', '--merge-on', default='id', multiple=True)
+@click.option('-m', '--merge-on', default=['id'], multiple=True)
 @click.option('-h', '--header', default=0)
 @click.option('-s', '--skip-row', multiple=True, type=int)
 @click.option('-o','--out-name',default=None)

@@ -150,7 +150,7 @@ def calculate_query_length(filename,vars_only=False,
 
 @click.command()
 @click.argument('folder', type=click.Path(exists=True))
-@click.option('-m', '--merge-on', default='id')
+@click.option('-m', '--merge-on', default='id', multiple=True)
 @click.option('-h', '--header', default=0)
 @click.option('-s', '--skip-row', multiple=True, type=int)
 @click.option('-o','--out-name',default=None)
@@ -165,7 +165,7 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
     ----------
     folder : string
         folder name
-    merge_on : string
+    merge_on : string or list of strings
         column shared across all files, default id
     out_name : string
         name to use the file, if not provided uses folder.csv
@@ -192,7 +192,9 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
         click.echo('found files: ' + str(len(file_list)) )
         click.echo('\n'.join(file_list))
 
-    
+    # load all of the datafiles, applying the same skip and header to each file
+    # drop any rows that have no value for the merge column
+    #  drop any duplicat values for the merge column
     data_frame_list = [pd.read_csv(os.path.join(folder, file),
                                        header=header, 
                                        skiprows=lambda x: x in skip_row_list
@@ -200,7 +202,6 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
                            for file in file_list]
     
     if verbose:
-
         click.echo('loaded files: ' + str(len(data_frame_list)))
     
         

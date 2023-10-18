@@ -198,7 +198,7 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
     data_frame_list = [pd.read_csv(os.path.join(folder, file),
                                        header=header, 
                                        skiprows=lambda x: x in skip_row_list
-                                       ).dropna(subset=[merge_on]).drop_duplicates(subset=[merge_on])
+                                       ).dropna(subset=merge_on).drop_duplicates(subset=merge_on)
                            for file in file_list]
     
     if verbose:
@@ -209,8 +209,9 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0, skip_row_list=[
     #ensure the merge_on column exists in all files
     # unique_ids = []
     for df,source_file in zip(data_frame_list,file_list):
-        if not(merge_on in df.columns):
-            click.echo(source_file + 'does not have column ' + merge_on)
+        for merge_col in merge_on:
+            if not(merge_col in df.columns):
+                click.echo(source_file + 'does not have column ' + merge_col)
     
     if verbose:
         click.echo('all have the merge column')

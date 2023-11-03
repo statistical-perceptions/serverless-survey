@@ -1,0 +1,1 @@
+document.getElementById('{pass_var_name}').value = searchParams.get('{pass_var_name}');

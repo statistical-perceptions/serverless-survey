@@ -143,15 +143,35 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
                                     figure_meta.question_form_elements)
     question_form_html = question_form_template.format(**logging_vars)
 
-    # pass through vars
-    pass_through_template = load_template_file('question_form_elements','pass_through_var.html')
-    
     if debug:
         click.echo(out_html_file)
         click.echo(pass_through_vars)
-    pass_through_html = [pass_through_template.format(pass_var_name= ptvar)
-                                     for ptvar in pass_through_vars if not(ptvar=='id')]
-    question_form_elements = question_form_html + '\n\n'.join([''] + pass_through_html)
+    # pass through vars
+    pass_through_template_html = load_template_file('question_form_elements','pass_through_var.html')
+
+    pass_through_template_js = load_template_file('question_form_elements', 'pass_through_parse.js')
+
+
+    pass_through_html = [pass_through_template_html.format(pass_var_name=ptvar)
+                         for ptvar in pass_through_vars if not(ptvar == 'id')]
+    question_form_elements = question_form_html + \
+        '\n\n'.join([''] + pass_through_html)
+
+    if debug:
+        click.echo('working on js pass through')
+        click.echo(pass_through_template_js)
+        click.echo(pass_through_vars)
+    
+    pass_through_js_list = [pass_through_template_js.format(pass_var_name=ptvar)  for ptvar in pass_through_vars]
+    pass_through_js =  '\n'.join([''] + pass_through_js_list)
+    
+    if debug:
+        click.echo(pass_through_js)
+        click.echo('js for parse ')
+        click.echo(type(pass_through_js))
+
+
+
 
     #  load and fill footer_html based on confirm/submit or next 
     footer_vars = {
@@ -165,6 +185,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     # TODO make option for next? 
     footer_html = footer_template.format(**footer_vars)
 
+    if debug:
+        click.echo('footder done')
     # logging js
     logging_js = load_template_file('plot_logging_js',figure_meta.plot_logging_js )
     plot_logging_js = logging_js.format(**logging_vars)
@@ -176,17 +198,20 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
         include_plotlyjs='cdn', full_html=False, div_id=question_id, auto_play=False)
 
     
-    
+                    #  
     
     # combine all template variables for overall page
     page_info = {'page_title': page_title,
                  'next_question_url': next_question_url,
                  'question_form_elements': question_form_elements,
+                 'pass_through_js': pass_through_js,
                  'question_text': markdown.markdown(question_text),
                  'plot_html': plot_html,
                  'footer_html':footer_html,
                  'plot_logging_js': plot_logging_js}
-    
+    if debug: 
+        click.echo(page_info)
+        
     if full_html:
         page_template = load_template_file('page.html')
     else:
@@ -215,7 +240,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     # this is for the user
     #    notebook exmaples print it as markdown
     #    config generator captures into a file
-    settings_vars = {'send_vars':pass_through_vars +list(logging_vars.values()),
+    send_vars = sorted(pass_through_vars + list(logging_vars.values()))
+    settings_vars = {'send_vars':send_vars,
                      'out_html_file': out_html_file,
                      'next_question_url': next_question_url,
                      'out_url':out_url}

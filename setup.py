@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='serverlesssurvey',
-    version='0.3.5',
+    version='0.3.6',
     packages=['ssbuilder'],
     install_requires=[
         'Click', 'pandas', 'lxml', 'plotly', 'requests', 'html5lib',

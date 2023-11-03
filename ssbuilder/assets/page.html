@@ -43,8 +43,11 @@
 </form>
 <script>
     // prefill id from URL with incoming
-    (new URL(window.location.href)).searchParams.forEach((x, y) =>
-        document.getElementById(y).value = x);
+    // (new URL(window.location.href)).searchParams.forEach((x, y) =>
+    //     document.getElementById(y).value = x);
+    const searchParams = new URLSearchParams(window.location.search);
+    
+    {pass_through_js}
 
     // plot type specific js from a plot_log_<plt tpe>.js file
     {plot_logging_js}

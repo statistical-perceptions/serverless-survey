@@ -498,21 +498,27 @@ def generate_from_configuration(config_file=None,repo_name=None,
             # update  remaining parameters
             fc_i.update(q_i)
     
+
     # ------------------------------------------------------------------------
     # parse for pass through vars for sequential questions
     
     parsed_config = set_pass_through(full_config,study_pass_through_vars, debug)
 
+    # remove metadata, inplace
+    #  could be saved, but if nested it's a dict and nontrival to print for now. 
+    [q.pop('metadata',None) for q in parsed_config]
+
     # -------------- generate all of the files and save the instructions
     if not(os.path.isdir(out_rel_path)):
         os.makedirs(out_rel_path)
-    instructions = [make_question_page(
-        **q, out_url=out_url, out_rel_path=out_rel_path,
+    instructions = [make_question_page(**q, out_url=out_url, out_rel_path=out_rel_path,
           debug=debug,full_html=not(fragment)) 
         for q in parsed_config]
     #  save instructions
     with open(instruction_file, 'w') as f:
         f.write('\n'.join(instructions))
+        f.write('\n\n ## Metadata')
+        # f.write('\n'.join(metadata))
 
     # check if end.html is required 
     #  end.html is an option for the `next_question_url` parameter to send people to a landing

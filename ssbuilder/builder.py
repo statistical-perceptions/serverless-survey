@@ -151,18 +151,24 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
 
     pass_through_template_js = load_template_file('question_form_elements', 'pass_through_parse.js')
 
+    # sort the pass throughs to make built html more stable
+    #     first sort by var name
+    #     next sort by the part after the _ (which is typically ID)
+    pass_through_vars_split = [ptv for ptv in pass_through_vars if '_' in ptv]
+    pass_through_vars_single = [ptv for ptv in pass_through_vars if not('_' in ptv)]
+    pass_through_vars_sorted = sorted(pass_through_vars_single) + sorted(sorted(pass_through_vars_split),key=lambda ptv: ptv.split('_')[1])
 
     pass_through_html = [pass_through_template_html.format(pass_var_name=ptvar)
-                         for ptvar in pass_through_vars if not(ptvar == 'id')]
+                         for ptvar in pass_through_vars_sorted if not(ptvar == 'id')]
     question_form_elements = question_form_html + \
         '\n\n'.join([''] + pass_through_html)
 
     if debug:
         click.echo('working on js pass through')
         click.echo(pass_through_template_js)
-        click.echo(pass_through_vars)
+        click.echo(pass_through_vars_sorted)
     
-    pass_through_js_list = [pass_through_template_js.format(pass_var_name=ptvar)  for ptvar in pass_through_vars]
+    pass_through_js_list = [pass_through_template_js.format(pass_var_name=ptvar)  for ptvar in pass_through_vars_sorted]
     pass_through_js =  '\n'.join([''] + pass_through_js_list)
     
     if debug:
@@ -240,7 +246,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     # this is for the user
     #    notebook exmaples print it as markdown
     #    config generator captures into a file
-    send_vars = sorted(pass_through_vars + list(logging_vars.values()))
+    send_vars = pass_through_vars_sorted + sorted(list(logging_vars.values()))
     settings_vars = {'send_vars':send_vars,
                      'out_html_file': out_html_file,
                      'next_question_url': next_question_url,

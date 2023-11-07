@@ -14,7 +14,8 @@ setup(
         'console_scripts': [
             'ssgeneratehtml = ssbuilder:generate_from_configuration',
             'sslengthcheck = ssbuilder:check_query_length',
-            'ssmergedir = ssbuilder:cmd_merge_dir_csvs'
+            'ssmergedir = ssbuilder:cmd_merge_dir_csvs',
+            'ssmetadata = ssbuilder:question_csv'
         ],
     },
 )

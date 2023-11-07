@@ -412,6 +412,31 @@ def get_file_name(question_dict = None, out_html_file=None, question_id = None):
 
     return out_html_file
 
+def expand_shared_params(loaded_config):
+    question_template = loaded_config['shared']
+    question_unique = loaded_config['unique']
+
+    # find nested parameters
+    nested_parameters = [k for k,v in question_template.items() if type(v)==dict]
+
+    # make copies of template for each real question
+    full_config = [question_template.copy() for q in question_unique]
+
+    # update each nested var
+    for fc_i,q_i in zip(full_config,question_unique):
+        # update the nested values first
+        for nest_param in nested_parameters:
+            if nest_param in q_i:
+                fc_i[nest_param].update(q_i[nest_param])
+                # remove from q after new values are inserted
+                del q_i[nest_param]
+        
+        # update  remaining parameters
+        fc_i.update(q_i)
+
+    return full_config
+
+
 @click.command()
 @click.option('-f','--config-file')
 @click.option('-p', '--out_rel_path')
@@ -483,26 +508,7 @@ def generate_from_configuration(config_file=None,repo_name=None,
         # pass as is
         full_config = loaded_config
     elif 'shared' in loaded_config.keys():
-        question_template = loaded_config['shared']
-        question_unique = loaded_config['unique']
-
-        # find nested parameters
-        nested_parameters = [k for k,v in question_template.items() if type(v)==dict]
-
-        # make copies of template for each real question
-        full_config = [question_template.copy() for q in question_unique]
-
-        # update each nested var
-        for fc_i,q_i in zip(full_config,question_unique):
-            # update the nested values first
-            for nest_param in nested_parameters:
-                if nest_param in q_i:
-                    fc_i[nest_param].update(q_i[nest_param])
-                    # remove from q after new values are inserted
-                    del q_i[nest_param]
-            
-            # update  remaining parameters
-            fc_i.update(q_i)
+        full_config = expand_shared_params(loaded_config)
     
 
     # ------------------------------------------------------------------------
@@ -548,3 +554,31 @@ def generate_from_configuration(config_file=None,repo_name=None,
 
         with open(os.path.join(out_rel_path, 'aio.html'),'w') as f:
             f.write(page)
+
+@click.command()
+@click.option('-f','--config-file')
+@click.option('-m','--metadata',multiple=True,default = None)
+              
+def question_csv(config_file=None,metadata=None):
+    '''
+    '''
+    # --------------  load and parse the configurations
+    with open(config_file, 'r') as f:
+        loaded_config = yaml.load(f, Loader=yaml.Loader)
+
+    full_config = expand_shared_params(loaded_config)
+
+    base_attrs = ['question_id','question_text']
+    if metadata:
+        out_cols = base_attrs + list(metadata)
+        data = [[q[a] for a in base_attrs] + [q['metadata'][ma] for ma in metadata] for q in full_config]
+    else:
+        out_cols = base_attrs
+        data = [[q[a] for a in base_attrs] for q in full_config]
+
+    df = pd.DataFrame(data =data, columns = out_cols)
+    click.echo('Created DataFrame with shape ' + str(df.shape))
+
+    csv_file_name = config_file.split('.')[0] + '.csv'
+    df.to_csv(csv_file_name)
+    click.echo('wrote out ' + csv_file_name )

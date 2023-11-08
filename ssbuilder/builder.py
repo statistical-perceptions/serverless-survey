@@ -538,7 +538,7 @@ def generate_from_configuration(config_file=None,repo_name=None,
     next_url_list = [d['next_question_url'] for d in full_config]
     if 'end.html' in next_url_list:
         end_html = load_template_file('end.html')
-        with open(os.path.join(out_rel_path,file_name),'w') as f:
+        with open(os.path.join(out_rel_path,'end.html'),'w') as f:
             f.write(end_html)
          
 

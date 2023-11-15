@@ -18,7 +18,7 @@ class TradeoffBar():
                         x_value2='false_positive_rate', x_value2_hover='false positives',
                         y_col='percent', y_min=None, y_max=None, num_digits=1,
                         color_col='group', color_hover= 'people',
-                        disable_zoom=True):
+                        disable_zoom=True, default_selection=10):
         '''
         make the barplot
         
@@ -47,6 +47,8 @@ class TradeoffBar():
             hover text to use for groups created by color
         disable_zoom : bool
             disable the zoom on the generated plot
+        default_selection :int
+            model that is selected when laoding
 
         Returns
         -------
@@ -63,14 +65,17 @@ class TradeoffBar():
                                                             x_value2: x_value2_hover})
         masked_df['group_hover'] = color_hover
 
+        # create the bar
         fig = px.bar(masked_df, x=x_col, y=y_col, animation_frame=slider_column,  color=color_col,
-                    barmode='group', custom_data=[slider_column, color_col, 'x_col_hover','group_hover']
-                    )
+                    barmode='group', custom_data=[slider_column, color_col, 'x_col_hover','group_hover'])
+        
+        # update hover text
         hover_template = (slider_label + ' %{customdata[0]} <br> %{y:.'+str(num_digits)
                           +'f}% %{customdata[2]} <br>' +
                         ' for %{customdata[1]} %{customdata[3]}<extra></extra>')
         fig.update_traces(hovertemplate=hover_template)
 
+        # make the slider locatoin easier to access in the js for logging
         for frame in fig.frames:
             for bar in frame.data:
                 bar.hovertemplate = hover_template
@@ -89,6 +94,9 @@ class TradeoffBar():
             y_max = masked_df[y_col].max()
             
         fig.update_yaxes(range=[y_min, y_max])
+
+        # FIXME: this could be better
+        fig._layout_obj.sliders[0].active = default_selection
         
         return fig
 

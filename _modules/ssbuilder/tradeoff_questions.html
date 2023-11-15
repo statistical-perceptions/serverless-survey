@@ -285,7 +285,7 @@ document.write(`
                         <span class="n">x_value2</span><span class="o">=</span><span class="s1">&#39;false_positive_rate&#39;</span><span class="p">,</span> <span class="n">x_value2_hover</span><span class="o">=</span><span class="s1">&#39;false positives&#39;</span><span class="p">,</span>
                         <span class="n">y_col</span><span class="o">=</span><span class="s1">&#39;percent&#39;</span><span class="p">,</span> <span class="n">y_min</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y_max</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_digits</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
                         <span class="n">color_col</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">color_hover</span><span class="o">=</span> <span class="s1">&#39;people&#39;</span><span class="p">,</span>
-                        <span class="n">disable_zoom</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                        <span class="n">disable_zoom</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">default_selection</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        make the barplot</span>
 <span class="sd">        </span>
@@ -314,6 +314,8 @@ document.write(`
 <span class="sd">            hover text to use for groups created by color</span>
 <span class="sd">        disable_zoom : bool</span>
 <span class="sd">            disable the zoom on the generated plot</span>
+<span class="sd">        default_selection :int</span>
+<span class="sd">            model that is selected when laoding</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -330,14 +332,17 @@ document.write(`
                                                             <span class="n">x_value2</span><span class="p">:</span> <span class="n">x_value2_hover</span><span class="p">})</span>
         <span class="n">masked_df</span><span class="p">[</span><span class="s1">&#39;group_hover&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">color_hover</span>
 
+        <span class="c1"># create the bar</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">px</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">masked_df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x_col</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y_col</span><span class="p">,</span> <span class="n">animation_frame</span><span class="o">=</span><span class="n">slider_column</span><span class="p">,</span>  <span class="n">color</span><span class="o">=</span><span class="n">color_col</span><span class="p">,</span>
-                    <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">custom_data</span><span class="o">=</span><span class="p">[</span><span class="n">slider_column</span><span class="p">,</span> <span class="n">color_col</span><span class="p">,</span> <span class="s1">&#39;x_col_hover&#39;</span><span class="p">,</span><span class="s1">&#39;group_hover&#39;</span><span class="p">]</span>
-                    <span class="p">)</span>
+                    <span class="n">barmode</span><span class="o">=</span><span class="s1">&#39;group&#39;</span><span class="p">,</span> <span class="n">custom_data</span><span class="o">=</span><span class="p">[</span><span class="n">slider_column</span><span class="p">,</span> <span class="n">color_col</span><span class="p">,</span> <span class="s1">&#39;x_col_hover&#39;</span><span class="p">,</span><span class="s1">&#39;group_hover&#39;</span><span class="p">])</span>
+        
+        <span class="c1"># update hover text</span>
         <span class="n">hover_template</span> <span class="o">=</span> <span class="p">(</span><span class="n">slider_label</span> <span class="o">+</span> <span class="s1">&#39; %</span><span class="si">{customdata[0]}</span><span class="s1"> &lt;br&gt; %{y:.&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">num_digits</span><span class="p">)</span>
                           <span class="o">+</span><span class="s1">&#39;f}</span><span class="si">% %{customdata[2]}</span><span class="s1"> &lt;br&gt;&#39;</span> <span class="o">+</span>
                         <span class="s1">&#39; for %</span><span class="si">{customdata[1]}</span><span class="s1"> %</span><span class="si">{customdata[3]}</span><span class="s1">&lt;extra&gt;&lt;/extra&gt;&#39;</span><span class="p">)</span>
         <span class="n">fig</span><span class="o">.</span><span class="n">update_traces</span><span class="p">(</span><span class="n">hovertemplate</span><span class="o">=</span><span class="n">hover_template</span><span class="p">)</span>
 
+        <span class="c1"># make the slider locatoin easier to access in the js for logging</span>
         <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="n">fig</span><span class="o">.</span><span class="n">frames</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">bar</span> <span class="ow">in</span> <span class="n">frame</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
                 <span class="n">bar</span><span class="o">.</span><span class="n">hovertemplate</span> <span class="o">=</span> <span class="n">hover_template</span>
@@ -356,6 +361,9 @@ document.write(`
             <span class="n">y_max</span> <span class="o">=</span> <span class="n">masked_df</span><span class="p">[</span><span class="n">y_col</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
             
         <span class="n">fig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">[</span><span class="n">y_min</span><span class="p">,</span> <span class="n">y_max</span><span class="p">])</span>
+
+        <span class="c1"># FIXME: this could be better</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">_layout_obj</span><span class="o">.</span><span class="n">sliders</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">active</span> <span class="o">=</span> <span class="n">default_selection</span>
         
         <span class="k">return</span> <span class="n">fig</span></div></div>
 

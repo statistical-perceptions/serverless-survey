@@ -13,7 +13,8 @@ class TradeoffBar():
         self.question_form_elements = 'form_tradeoff.html'
         self.logging_vars = logging_vars
 
-    def generate_figure(self,pretty_data_file, slider_column='model_number', slider_label='Model',
+    def generate_figure(self,pretty_data_file,
+                         slider_column='model_number', slider_label='Model',
                         x_col='metric', x_value1='accuracy', x_value1_hover='accurate',
                         x_value2='false_positive_rate', x_value2_hover='false positives',
                         y_col='percent', y_min=None, y_max=None, num_digits=1,
@@ -32,10 +33,14 @@ class TradeoffBar():
             name of column to use for the slider
         slider_label : string
             name to display when labeling the slider postion values (and in hovertext)
-        x_col,y_col : string
-            name of column to use for the xor y axis 
-        x_value1,x_value2 : same as the values of `x_col` in the data file
-            first,second value to filter (left, right metric)
+        x_col : string
+            name of column to use for the x axis 
+        y_col : string
+            name of column to use for the  y axis 
+        x_value1 : same as the values of `x_col` in the data file
+            first,second value to filter (left metric)
+        x_value2 : same as the values of `x_col` in the data file
+            first,second value to filter ( right metric)
         x_value1_hover, x_value2_hover : string
             noun versions to use in the hovertext
         y_min,y_max : numerical
@@ -53,7 +58,7 @@ class TradeoffBar():
         Returns
         -------
         fig : plotly figure object
-        figure object based on parameters
+            figure object based on parameters
 
         '''
         df = pd.read_csv(pretty_data_file)

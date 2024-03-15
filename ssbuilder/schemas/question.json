@@ -1,0 +1,88 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "tbd",
+    "title": "Question",
+    "description": "a question object",
+    "type": "object",
+    "properties": {
+        "question_id": {
+            "type": "string",
+            "description": "Name for the question internally.",
+            "required": true
+        },
+        "figure_type": {
+            "type": "string",
+            "description": "String name of valid plot type in ssbuilder."
+        },
+        "figure_values": {
+            "type": "object",
+            "description": "Parameters to pass to plotting function."
+        },
+        "page_title": {
+            "type": "string",
+            "description": "What to show in the tab title. Default is 'Normal Curve Question'."
+        },
+        "question_text": {
+            "type": "string",
+            "description": "The text of the question."
+        },
+        "confirm_message": {
+            "type": "string",
+            "description": "Prompt for confirmation.",
+            "default":"Confirm my answer"
+        },
+        "skip_message": {
+            "type": "string",
+            "description": "Prompt for skipping.",
+            "default":"Prefer not to answer"
+        },
+        "button_text": {
+            "type": "string",
+            "description": "Text on button.",
+            "default":"Submit"
+        },
+        "out_html_file": {
+            "type": "string",
+            "description": "Name for the HTML file. If not passed, will add '.html' to the question ID."
+        },
+        "logging_vars": {
+            "type": "object",
+            "description": "names for the variable types the specific question requires."
+        },
+        "confirm_var_name": {
+            "type": "string",
+            "description": "Name for the variable. If not passed, will be question_id + 'confirm' + question_id."
+        },
+        "var_name_suffix": {
+            "type": "boolean",
+            "description": "If true, add question_id to the passed values for all _var_names. Default is true. Can be changed to false if you specify the variable names directly.",
+            "default": true
+        },
+        "pass_through_vars": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "List of variables to pass through from previous to next."
+        },
+        "next_question_url": {
+            "type": "string",
+            "description": "Question ID or URL for the Qualtrics survey."
+        },
+        "pretty_url": {
+            "type": "boolean",
+            "description": "If true, make pages like '/IndentiCurve/name/' instead of '/IdentiCurve/name.html'.",
+            "default": false
+        },
+        "full_html": {
+            "type": "boolean",
+            "description": "Generate a full HTML page or if false, generate only a segment of the page (e.g., for combining or embedding).",
+            "default": true
+        }
+    },
+    "required": [
+        "question_id",
+        "question_text",
+        "next_question_url"
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "tbd",
+    "title": "Study (factored",
+    "description": "a factored object that separates the shraed and unique values",
+    "type": "object",
+    "properties": {
+        "shared": {
+            "description": "shared  attributes",
+            "type": "object"
+        },
+        "unique": {
+            "description": "per question attributes",
+            "type": "object"
+            
+        }
+    }
+}

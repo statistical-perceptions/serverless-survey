@@ -1,0 +1,79 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "tbd",
+    "title": "Product",
+    "description": "figure values for bar tradeoff question",
+    "type": "object",
+    "properties": {
+        "pretty_data_file": {
+            "type": "string",
+            "description": "File name of a tidy (tall) dataset with pretty content. Any data transformations should occur on the data (e.g., scaling .7523943 to 75.23943 and expanding column names). Column names can still rely on Python conventions. Before display, the '_' will be converted to space."
+        },
+        "slider_column": {
+            "type": "string",
+            "description": "Name of column to use for the slider."
+        },
+        "slider_label": {
+            "type": "string",
+            "description": "Name to display when labeling the slider position values (and in hovertext)."
+        },
+        "x_col": {
+            "type": "string",
+            "description": "Name of column to use for the x-axis."
+        },
+        "y_col": {
+            "type": "string",
+            "description": "Name of column to use for the y-axis."
+        },
+        "x_value1": {
+            "type": "string",
+            "description": "First value to filter (left hand in bar) must be a value from x_col."
+        },
+        "x_value2": {
+            "type": "string",
+            "description": "second value to filter (right metric). must be a value from x_col."
+        },
+        "x_value1_hover": {
+            "type": "string",
+            "description": "Noun version of x_value1 to use in the hovertext"
+        },
+        "x_value2_hover": {
+            "type": "string",
+            "description": "Noun versions of x_value2 to  use in the hovertext."
+        },
+        "y_min": {
+            "type": "number",
+            "description": "Minimum value to fix the plot axes. If none, allow Plotly to decide."
+        },
+        "y_max": {
+            "type": "number",
+            "description": "Maximum value to fix the plot axes. If none, allow Plotly to decide."
+        },
+        "num_digits": {
+            "type": "integer",
+            "description": "Number of digits to display.",
+            "default":2
+        },
+        "color_col": {
+            "type": "string",
+            "description": "Name of column to use for the coloring of the bars."
+        },
+        "color_hover": {
+            "type": "string",
+            "description": "Hover text to use for groups created by color."
+        },
+        "disable_zoom": {
+            "type": "boolean",
+            "description": "Disable the zoom on the generated plot."
+        },
+        "default_selection": {
+            "type": "integer",
+            "description": "Model that is selected pages is loaded, should not be answer",
+            "default":10
+        }
+    },
+    "required": [
+        "pretty_data_file"
+
+    ]
+}

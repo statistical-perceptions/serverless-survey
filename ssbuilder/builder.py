@@ -89,7 +89,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     pass_through_vars : list of strings ['id']
         list of variables to pass through from previous to next
     next_question_url : string
-        question id or url for the qualtrics question
+        question id or url for the qualtrics survey
     pretty_url : boolean {False}
         if True make pages like `/IndentiCurve/name/` instead of `/IdentiCurve/name.html` 
     full_html : boolean {True}

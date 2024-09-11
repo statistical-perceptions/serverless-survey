@@ -6,7 +6,7 @@ setup(
     packages=['ssbuilder'],
     install_requires=[
         'Click', 'pandas', 'lxml', 'plotly', 'requests', 'html5lib',
-        'markdown'
+        'markdown','scipy'
     ],
 
     include_package_data=True,

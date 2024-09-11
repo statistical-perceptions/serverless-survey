@@ -418,22 +418,17 @@ def expand_shared_params(loaded_config):
 
     # find nested parameters
     nested_parameters = [k for k,v in question_template.items() if type(v)==dict]
+    
 
     # make copies of template for each real question
     full_config = [question_template.copy() for q in question_unique]
 
-    # update each nested var
+    # update each question
     for fc_i,q_i in zip(full_config,question_unique):
-        # update the nested values first
-        for nest_param in nested_parameters:
-            if nest_param in q_i:
-                fc_i[nest_param].update(q_i[nest_param])
-                # remove from q after new values are inserted
-                del q_i[nest_param]
         
-        # update  remaining parameters
         fc_i.update(q_i)
-
+    
+    
     return full_config
 
 

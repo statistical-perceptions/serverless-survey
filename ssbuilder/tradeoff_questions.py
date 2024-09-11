@@ -95,8 +95,9 @@ class TradeoffBar():
             
         fig.update_yaxes(range=[y_min, y_max])
 
-        # FIXME: this could be better
+        # set slider and replot data
         fig._layout_obj.sliders[0].active = default_selection
+        fig = go.Figure(data =fig['frames'][default_selection]['data'], frames=fig['frames'], layout=fig.layout)
         
         return fig
 
@@ -214,8 +215,7 @@ class TradeoffLine():
                         hovertemplate="<b>Model %{x}</b> <br><br>" + metric_tbl + '<extra></extra>'), 
                     secondary_y=False)
 
-            # Make 10th trace visible
-            fig.data[default_selection].visible = True
+            
 
             # Create and add slider
             steps = []
@@ -232,11 +232,13 @@ class TradeoffLine():
                 steps.append(step)
 
             sliders = [dict(
-                active=default_selection,
+                active=default_selection + offset,
                 currentvalue={"prefix": slider_label + ":"},
                 pad={"t": 50},
                 steps=steps
             )]
+            # Make selected default trace visible
+            fig.data[default_selection+offset].visible = True
 
             fig.update_layout(
                 sliders=sliders,

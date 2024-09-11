@@ -1,13 +1,13 @@
 ---
 jupytext:
-  formats: md:myst
+  formats: md:myst,ipynb
   text_representation:
     extension: .md
     format_name: myst
     format_version: 0.13
-    jupytext_version: 1.14.1
+    jupytext_version: 1.16.4
 kernelspec:
-  display_name: Python 3
+  display_name: Python 3 (ipykernel)
   language: python
   name: python3
 ---
@@ -27,7 +27,8 @@ All questions must have certain parameters:
 the `question_text` can include markdown formatting which will be rendered with the [markdown](https://pypi.org/project/Markdown/) package
 
 ```{code-cell} ipython3
-:tags: ["remove-input"]
+:tags: [remove-input]
+
 import ssbuilder
 # import markdown
 from IPython.display import display, Markdown
@@ -46,16 +47,18 @@ All example figures on this page are done with defaults which are visible on the
 ````
 
 ```{code-cell} ipython3
-:tags: ["remove-input"]
+:tags: [remove-input]
+
 ssbuilder.NormalCurveSlider().generate_figure()
 ```
-
 
 ### Settings 
 
 Use `figure_type: NormalCurveSlider` with the following parameters in `figure_values`
+
 ```{code-cell} ipython3
-:tags: ["remove-input"]
+:tags: [remove-input]
+
 Markdown(ssbuilder.md_params(ssbuilder.NormalCurveSlider().generate_figure))
 ```
 
@@ -66,10 +69,11 @@ this question type trades off between two two extremes over a number of models i
 Both formats accept the same dataset files, where each  row represents one bar heigh for one slider location. 
 The values should be compatible with deisplay in the figures, for example converting .74 to 75 to display percentages. There may be extra columns that are not used. 
 
-An example (that is used in the example plots): 
+An example (that is used in the example plots):
 
 ```{code-cell} ipython3
-:tags: ["remove-input"]
+:tags: [remove-input]
+
 import pandas as pd
 df = pd.read_csv('../_examples/tall_pretty.csv')
 df.head()
@@ -82,36 +86,46 @@ This uses lines to show all metrics on one set of axes.
 #### Example
 
 ```{code-cell} ipython3
-:tags: ["remove-input"]
-ssbuilder.TradeoffLine().generate_figure(pretty_data_file='../_examples/tall_pretty.csv')
+:tags: [remove-input]
+
+ssbuilder.TradeoffLine().generate_figure(pretty_data_file='../_examples/tall_pretty.csv',default_selection=40)
 ```
 
 #### Settings
 Use `figure_type: TradeoffLine` with the following parameters for use in `figure_values`:
+
 ```{code-cell} ipython3
-:tags: ["remove-input"]
+:tags: [remove-input]
+
 Markdown(ssbuilder.md_params(ssbuilder.TradeoffLine().generate_figure))
 ```
+
 <!-- edit in docstring -->
 ### Bar Graph Tradeoff 
 
 This uses a set of bar graphs.
 
 #### Example
+
 ```{code-cell} ipython3
-:tags: ["remove-input"]
-ssbuilder.TradeoffBar().generate_figure(pretty_data_file='../_examples/tall_pretty.csv')
+:tags: [remove-input]
 
+ssbuilder.TradeoffBar().generate_figure(pretty_data_file='../_examples/tall_pretty.csv',default_selection=18)
 ```
-
-
 
 #### Settings
 Use `figure_type: TradeoffBar` with the following parameters for use in `figure_values`
 
 ```{code-cell} ipython3
-:tags: ["remove-input"]
+:tags: [remove-input]
+
 Markdown(ssbuilder.md_params(ssbuilder.TradeoffBar().generate_figure))
 ```
 
+```{code-cell} ipython3
 
+```
+
+```{code-cell} ipython3
+
+```

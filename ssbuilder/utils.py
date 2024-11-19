@@ -211,11 +211,18 @@ def merge_dir_csvs(folder,merge_on='id',out_name=None, header=0,
     # load all of the datafiles, applying the same skip and header to each file
     # drop any rows that have no value for the merge column
     #  drop any duplicate values for the merge columns
-    data_frame_list = [pd.read_csv(os.path.join(folder, file),
+    data_frame_list = []
+    for file in file_list:
+        try:
+            data_frame_list.append(pd.read_csv(os.path.join(folder, file),
                                        header=header, 
                                        skiprows=lambda x: x in skip_row
-                                       ).dropna(subset=merge_on).drop_duplicates(subset=merge_on)
-                           for file in file_list]
+                                       ).dropna(subset=merge_on).drop_duplicates(subset=merge_on))
+        except Exception as e:
+            e.add_note(file)
+            raise(e)
+            
+                           
     
     if verbose:
         click.echo('loaded files: ' + str(len(data_frame_list)))

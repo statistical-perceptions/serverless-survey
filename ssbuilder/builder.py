@@ -8,7 +8,7 @@ from scipy.stats import norm
 import click
 import yaml
 import markdown
-
+from copy import deepcopy
 import pkg_resources as pkgrs
 
 # import plot functions here 
@@ -129,6 +129,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
         if not (figure_values):
             figure = figure_meta.generate_figure()
         else:
+            if debug:
+                print(figure_values['num_digits'])
             figure = figure_meta.generate_figure(**figure_values)
 
     if var_name_suffix:
@@ -412,22 +414,35 @@ def get_file_name(question_dict = None, out_html_file=None, question_id = None):
 
     return out_html_file
 
-def expand_shared_params(loaded_config):
+def expand_shared_params(loaded_config,debug=False):
     question_template = loaded_config['shared']
     question_unique = loaded_config['unique']
+    if debug:
+        print('shared first:\n',question_template)
 
     # find nested parameters
     nested_parameters = [k for k,v in question_template.items() if type(v)==dict]
     
 
     # make copies of template for each real question
-    full_config = [question_template.copy() for q in question_unique]
+    full_config = [deepcopy(question_template) for q in question_unique]
 
     # update each question
-    for fc_i,q_i in zip(full_config,question_unique):
+    # full_config = []
+    for q_i,c_i in zip(question_unique,full_config):
+        # c_i = question_template.copy()
         
-        fc_i.update(q_i)
-    
+        for nested_param in nested_parameters:
+            # update the nested and then remove the key
+            if nested_param in q_i:
+                c_i[nested_param] |= q_i[nested_param]
+                q_i.pop(nested_param)
+            
+                
+
+        # update remaining (not dict values)
+        c_i |= q_i
+
     
     return full_config
 
@@ -503,7 +518,7 @@ def generate_from_configuration(config_file=None,repo_name=None,
         # pass as is
         full_config = loaded_config
     elif 'shared' in loaded_config.keys():
-        full_config = expand_shared_params(loaded_config)
+        full_config = expand_shared_params(loaded_config,debug)
     
 
     # ------------------------------------------------------------------------
@@ -518,6 +533,7 @@ def generate_from_configuration(config_file=None,repo_name=None,
     # -------------- generate all of the files and save the instructions
     if not(os.path.isdir(out_rel_path)):
         os.makedirs(out_rel_path)
+    
     instructions = [make_question_page(**q, out_url=out_url, out_rel_path=out_rel_path,
           debug=debug,full_html=not(fragment)) 
         for q in parsed_config]
@@ -554,14 +570,14 @@ def generate_from_configuration(config_file=None,repo_name=None,
 @click.option('-f','--config-file')
 @click.option('-m','--metadata',multiple=True,default = None)
               
-def question_csv(config_file=None,metadata=None):
+def question_csv(config_file=None,metadata=None,debug=False):
     '''
     '''
     # --------------  load and parse the configurations
     with open(config_file, 'r') as f:
         loaded_config = yaml.load(f, Loader=yaml.Loader)
 
-    full_config = expand_shared_params(loaded_config)
+    full_config = expand_shared_params(loaded_config,debug)
 
     base_attrs = ['question_id','question_text']
     if metadata:

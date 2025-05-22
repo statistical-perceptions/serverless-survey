@@ -108,7 +108,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     question_id = question_id.replace('/', '').replace(' ', '-').lower()
 
     #     ensure file name is valid
-    out_html_file = get_file_name(out_html_file, question_id)
+    out_html_file = get_file_name(out_html_file=out_html_file, question_id =question_id)
 
     # fix defaults
 

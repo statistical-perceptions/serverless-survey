@@ -1,12 +1,15 @@
-# Used rhodyprog4ds repository as a template for setting up the publish file
-
-name: deploy-book
+name: deploy-docs
 
 on:
   push:
     branches:
     - main
 
+
+permissions:
+  id-token: write
+  contents: read 
+  pages: write
 
 jobs:
   deploy-book:

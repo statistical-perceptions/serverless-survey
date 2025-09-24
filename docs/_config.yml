@@ -3,7 +3,7 @@
 
 title: Serverless Survey
 author: Sarah M Brown  
-logo: logo.png
+logo: ss-logo.png
 # Patterns to skip when building the book. Can be glob-style (e.g. "*skip.ipynb")
 exclude_patterns            : [_build, Thumbs.db, .DS_Store, "**.ipynb_checkpoints"]
 # Auto-exclude files not in the toc

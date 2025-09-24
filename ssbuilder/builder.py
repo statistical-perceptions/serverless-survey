@@ -9,7 +9,7 @@ import click
 import yaml
 import markdown
 from copy import deepcopy
-import pkg_resources as pkgrs
+from importlib.resources import files
 
 # import plot functions here 
 from .single_normal_curve import NormalCurveSlider
@@ -20,14 +20,17 @@ figure_classes = {'NormalCurveSlider': NormalCurveSlider,
                   'TradeoffBar': TradeoffBar,
                   'TradeoffLine': TradeoffLine}
 
+
 def load_template_file(*args):
-    template_rel = os.path.join('assets', *args)
-    template_path = pkgrs.resource_filename(__name__, template_rel)
+    '''
+    load a template file from the package's template dir
+    '''
+    template_path = os.path.join(files(__package__), 'assets', *args)
+    
     with open(template_path, 'r') as tmpt_f:
         template = tmpt_f.read()
     
     return(template)
-
 
 settings_message_template = ''' ---------------------------
 Created: [{out_url}/{out_html_file}]({out_url}/{out_html_file})  

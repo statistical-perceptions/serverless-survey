@@ -30,8 +30,7 @@ the `question_text` can include markdown formatting which will be rendered with 
 :tags: [remove-input]
 
 import ssbuilder
-# import markdown
-from IPython.display import display, Markdown
+from IPython.display import display, Markdown, HTML
 ```
 
 ## Normal Curve Questions
@@ -49,7 +48,11 @@ All example figures on this page are done with defaults which are visible on the
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-ssbuilder.NormalCurveSlider().generate_figure()
+figure = ssbuilder.NormalCurveSlider().generate_figure()
+fig_html = figure.to_html(
+        include_plotlyjs='cdn', full_html=False, auto_play=False)
+
+HTML(fig_html)
 ```
 
 ### Settings 
@@ -88,7 +91,11 @@ This uses lines to show all metrics on one set of axes.
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-ssbuilder.TradeoffLine().generate_figure(pretty_data_file='../_examples/tall_pretty.csv',default_selection=40)
+figure = ssbuilder.TradeoffLine().generate_figure(pretty_data_file='../_examples/tall_pretty.csv',default_selection=40)
+fig_html = figure.to_html(
+        include_plotlyjs='cdn', full_html=False, auto_play=False)
+
+HTML(fig_html)
 ```
 
 #### Settings
@@ -110,7 +117,11 @@ This uses a set of bar graphs.
 ```{code-cell} ipython3
 :tags: [remove-input]
 
-ssbuilder.TradeoffBar().generate_figure(pretty_data_file='../_examples/tall_pretty.csv',default_selection=18)
+figure = ssbuilder.TradeoffBar().generate_figure(pretty_data_file='../_examples/tall_pretty.csv',default_selection=18)
+fig_html = figure.to_html(
+        include_plotlyjs='cdn', full_html=False, auto_play=False)
+
+HTML(fig_html)
 ```
 
 #### Settings

@@ -24,6 +24,13 @@ pip install .
 
 To work offline and be able to test your contributions.  
 
+To view the docs offline, 
+
+```bash
+cd docs
+jupyter-book build .
+```
+
 ## About
 
 Serverless Survey was initially developed by Sarah M Brown (@brownsarahm) for a collaboration with the [RISE Lab](https://riselab.science/) at Brown University directed by [C. Malik Boykin]([@CMBoykin](https://github.com/CMBoykin)).  

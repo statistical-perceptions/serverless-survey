@@ -14,11 +14,13 @@ import pkg_resources as pkgrs
 # import plot functions here 
 from .single_normal_curve import NormalCurveSlider
 from .tradeoff_questions import TradeoffBar, TradeoffLine
+from .no_plot import NoPlot
 
 # add function handle and a reference name here to add new types
 figure_classes = {'NormalCurveSlider': NormalCurveSlider,
                   'TradeoffBar': TradeoffBar,
-                  'TradeoffLine': TradeoffLine}
+                  'TradeoffLine': TradeoffLine,
+                  'NoPlot': NoPlot}
 
 def load_template_file(*args):
     template_rel = os.path.join('assets', *args)
@@ -118,6 +120,27 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     
     # process figure related
     if type(figure_type) == str:
+
+        ### ADDING NO PLOT FIGURE TYPE ###
+        figure_meta = None
+        figure = None
+
+        if isinstance(figure_type, str):
+            if not logging_vars:
+                figure_meta = figure_classes[figure_type]()
+                logging_vars = figure_meta.logging_vars
+            else:
+                figure_meta = figure_classes[figure_type](logging_vars)
+            
+            # generate figure
+            if not figure_values:
+                figure = figure_meta.generate_figure()
+            else:
+                if  debug and 'num_digits' in figure_values:
+                    print(figure_values['num_digits'])
+                figure = figure_meta.generate_figure(**figure_values)
+        ### ADDING NO PLOT FIGURE TYPE ###
+
         # set logging vars into or get from figure obj
         if not (logging_vars):
             figure_meta = figure_classes[figure_type]()
@@ -195,18 +218,22 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
 
     if debug:
         click.echo('footder done')
-    # logging js
-    logging_js = load_template_file('plot_logging_js',figure_meta.plot_logging_js )
-    plot_logging_js = logging_js.format(**logging_vars)
 
+    ### LOGGING JS CHANGES HERE ###
+    # load and fill in logging js
+    if figure is None:
+        plot_logging_js = ''
+        plot_html = ''
+    else:
+        logging_js = load_template_file('plot_logging_js',figure_meta.plot_logging_js )
+        plot_logging_js = logging_js.format(**logging_vars)
 
-    #  fill in contents to page.thml
-    # get figure html
-    plot_html = figure.to_html(
-        include_plotlyjs='cdn', full_html=False, div_id=question_id, auto_play=False)
+        plot_html = figure.to_html(
+            include_plotlyjs='cdn', full_html=False, div_id=question_id, auto_play=False)
+    ### LOGGING JS CHANGES HERE ###
 
+    ## MOVED: fill in contents to page.html, get figure html
     
-                    #  
     
     # combine all template variables for overall page
     page_info = {'page_title': page_title,

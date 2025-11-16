@@ -14,11 +14,13 @@ from importlib.resources import files
 # import plot functions here 
 from .single_normal_curve import NormalCurveSlider
 from .tradeoff_questions import TradeoffBar, TradeoffLine
+from .instructions import InstructionQuestion
 
 # add function handle and a reference name here to add new types
 figure_classes = {'NormalCurveSlider': NormalCurveSlider,
                   'TradeoffBar': TradeoffBar,
-                  'TradeoffLine': TradeoffLine}
+                  'TradeoffLine': TradeoffLine,
+                  'InstructionQuestion': InstructionQuestion}
 
 
 def load_template_file(*args):
@@ -55,7 +57,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
                        out_url = None,
                        next_question_url=None,
                        debug=False,
-                       full_html=True):
+                       full_html=True,
+                       footer_type='confirm_submit'):
     '''
     generate html file
     
@@ -97,8 +100,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
         if True make pages like `/IndentiCurve/name/` instead of `/IdentiCurve/name.html` 
     full_html : boolean {True}
         generate a full html page or if False, generate only a segment of the page (eg for combining or embedding)
-    
-    Returns
+    footer_type : string {'confirm_submit','next' }
+        type of footer to use 'confirm_submit'  or 'next'
     -------
     
     Notes
@@ -121,6 +124,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     
     # process figure related
     if type(figure_type) == str:
+
+
         # set logging vars into or get from figure obj
         if not (logging_vars):
             figure_meta = figure_classes[figure_type]()
@@ -192,24 +197,27 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
         'skip_id': question_id + 'skip',
         'confirm_id': question_id+'confirm',
         'button_text': button_text}
-    footer_template = load_template_file('footer_html','footer_confirm_submit.html')  
+    footer_file_name = f'footer_{footer_type}.html'
+    footer_template = load_template_file('footer_html',footer_file_name)  
     # TODO make option for next? 
     footer_html = footer_template.format(**footer_vars)
 
     if debug:
         click.echo('footder done')
-    # logging js
-    logging_js = load_template_file('plot_logging_js',figure_meta.plot_logging_js )
-    plot_logging_js = logging_js.format(**logging_vars)
-
-
-    #  fill in contents to page.thml
-    # get figure html
-    plot_html = figure.to_html(
-        include_plotlyjs='cdn', full_html=False, div_id=question_id, auto_play=False)
 
     
-                    #  
+    # load and fill in logging js
+    if figure is None:
+        #  for the no plot question
+        plot_logging_js = ''
+        plot_html = markdown.markdown(question_text)
+        question_text = 'intructions'
+    else:
+        logging_js = load_template_file('plot_logging_js',figure_meta.plot_logging_js )
+        plot_logging_js = logging_js.format(**logging_vars)
+
+        plot_html = figure.to_html(
+            include_plotlyjs='cdn', full_html=False, div_id=question_id, auto_play=False)
     
     # combine all template variables for overall page
     page_info = {'page_title': page_title,
@@ -326,43 +334,44 @@ def set_pass_through(config_dict_list,
                 click.echo(q_id)
                 click.echo('forwards to ')
                 click.echo(next_question)
-            # extract pass through vars and confirm
-            cur_question_vars = list(conf_qid[q_id]['logging_vars'].values())
-            cur_confirm = conf_qid[q_id]['confirm_var_name']
-            # var_name_suffix is defaulted to True in the make page, so same behavior here
-            #  if not passed at all or manually set to true
-            if not ('var_name_suffix' in conf_qid[q_id].keys()) or conf_qid[q_id]['var_name_suffix']:
-                cur_confirm += '_' + conf_qid[q_id]['question_id'].lower()
-                cur_question_vars = [qv + '_' + conf_qid[q_id]['question_id'].lower()
-                                     for qv in cur_question_vars]
-            cur_q_vars = [cur_confirm] + cur_question_vars
-            # append current pass throughs if they exist
-            if 'pass_through_vars' in conf_qid[q_id]:
-                if debug:
-                    click.echo(q_id)
-                    click.echo('adding cur vars to pass on next q')
-                
-                cur_q_vars += conf_qid[q_id]['pass_through_vars']
-            # add append or create passthrough vars key
-            if 'pass_through_vars' in conf_qid[next_question]:
-                if debug:
-                    click.echo('append ptv ')
-                    click.echo(study_default_pt_vars)
-                    click.echo(cur_q_vars)
-                    click.echo(next_question)
-                # appnd
-                next_pass_through = conf_qid[next_question]['pass_through_vars'] + cur_q_vars
-            else: 
-                if debug:
-                    click.echo('set ptv ')
-                    click.echo(study_default_pt_vars)
-                    click.echo(cur_q_vars)
-                    click.echo(next_question)
-                # setup
-                next_pass_through = study_default_pt_vars + cur_q_vars
+            # extract pass through vars and confirm if needed
+            if conf_qid[q_id]['logging_vars']:
+                cur_question_vars = list(conf_qid[q_id]['logging_vars'].values())
+                cur_confirm = conf_qid[q_id]['confirm_var_name']
+                # var_name_suffix is defaulted to True in the make page, so same behavior here
+                #  if not passed at all or manually set to true
+                if not ('var_name_suffix' in conf_qid[q_id].keys()) or conf_qid[q_id]['var_name_suffix']:
+                    cur_confirm += '_' + conf_qid[q_id]['question_id'].lower()
+                    cur_question_vars = [qv + '_' + conf_qid[q_id]['question_id'].lower()
+                                        for qv in cur_question_vars]
+                cur_q_vars = [cur_confirm] + cur_question_vars
+                # append current pass throughs if they exist
+                if 'pass_through_vars' in conf_qid[q_id]:
+                    if debug:
+                        click.echo(q_id)
+                        click.echo('adding cur vars to pass on next q')
+                    
+                    cur_q_vars += conf_qid[q_id]['pass_through_vars']
+                # add append or create passthrough vars key
+                if 'pass_through_vars' in conf_qid[next_question]:
+                    if debug:
+                        click.echo('append ptv ')
+                        click.echo(study_default_pt_vars)
+                        click.echo(cur_q_vars)
+                        click.echo(next_question)
+                    # appnd
+                    next_pass_through = conf_qid[next_question]['pass_through_vars'] + cur_q_vars
+                else: 
+                    if debug:
+                        click.echo('set ptv ')
+                        click.echo(study_default_pt_vars)
+                        click.echo(cur_q_vars)
+                        click.echo(next_question)
+                    # setup
+                    next_pass_through = study_default_pt_vars + cur_q_vars
 
-            # remove duplicates
-            conf_qid[next_question]['pass_through_vars'] = list(set(next_pass_through))
+                # remove duplicates
+                conf_qid[next_question]['pass_through_vars'] = list(set(next_pass_through))
             
             # set true url to next question url (either specfied or question id)
             if 'out_html_file' in conf_qid[next_question].keys():

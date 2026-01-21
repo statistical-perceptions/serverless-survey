@@ -72,7 +72,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
         parameters to pass to plotting function
     page_title : string
         what to show in the tab title default = 'Normal Curve Question',
-    question_text : string
+    question_text : string, markdown formatted
         the text of the questions
     confirm_message : text
         prompt for confirmation

@@ -34,11 +34,26 @@ def load_template_file(*args):
     
     return(template)
 
-settings_message_template = ''' ---------------------------
+instruction_template_log = ''' ---------------------------
 Created: [{out_url}/{out_html_file}]({out_url}/{out_html_file})  
 Forwards to: {next_question_url}  
 Sends: {send_vars}  
 '''
+
+instruction_template_minimal = '''
+[{out_url}/{out_html_file}]({out_url}/{out_html_file}) 
+'''
+
+instruction_template_forward = '''
+- [ ] [{out_url}/{out_html_file}]({out_url}/{out_html_file}) 
+Forwards to: {next_question_url} 
+Sends: {send_vars}
+'''
+
+instructions_template = {'log': instruction_template_log,
+                         'forward': instruction_template_forward,
+                         'minimal': instruction_template_minimal,
+                         'blank': ''}
 
 
 def make_question_page(question_id, figure_type='NormalCurveSlider', figure_values=None,
@@ -58,7 +73,9 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
                        next_question_url=None,
                        debug=False,
                        full_html=True,
-                       footer_type='confirm_submit'):
+                       footer_type='confirm_submit',
+                       instructions_type='log',
+                       forward_type = None):
     '''
     generate html file
     
@@ -264,7 +281,15 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
                      'out_html_file': out_html_file,
                      'next_question_url': next_question_url,
                      'out_url':out_url}
-    return settings_message_template.format(**settings_vars)
+    
+    if not(instructions_type) == 'log':
+        # check if internal or external forward and update type
+        instruction_by_fwd = {'internal':'minimal',
+                              'external':instructions_type}
+        instructions_type = instruction_by_fwd[forward_type]
+
+    instructions = instructions_template[instructions_type].format(**settings_vars)
+    return instructions
 
 def set_pass_through(config_dict_list,
                      study_default_pt_vars=['id'], debug=False):
@@ -293,12 +318,13 @@ def set_pass_through(config_dict_list,
         # set default ptvars
         
         conf_qid[q_id]['pass_through_vars'] = study_default_pt_vars.copy()
+        # if specifid, use that
         if 'next_question_url' in conf_qid[q_id]:
             
             # get next q target
             next_question = conf_qid[q_id]['next_question_url']
 
-            # if this has not bee seen yet
+            # if this has not been seen yet
             if not (q_id in q_traverse_order):
                 if next_question in q_traverse_order:
                     # if next q is in then 
@@ -308,7 +334,7 @@ def set_pass_through(config_dict_list,
                     # put this question in the list
                     q_traverse_order.append(q_id)
 
-            # check if its and id
+            # check if its an id
             while next_question in question_ids and not(next_question in q_traverse_order):
                 # append this
                 q_traverse_order.append(next_question)
@@ -328,7 +354,7 @@ def set_pass_through(config_dict_list,
                 click.echo(q_id)
                 click.echo(conf_qid[q_id]['pass_through_vars'])
 
-        # check if its an id
+        # check if its an id, an internal forward
         if next_question in question_ids:
             if debug:
                 click.echo(q_id)
@@ -378,7 +404,12 @@ def set_pass_through(config_dict_list,
                 conf_qid[q_id]['next_question_url'] = conf_qid[next_question]['out_html_file']
             else:
                 conf_qid[q_id]['next_question_url'] = conf_qid[next_question]['question_id'].lower() + '.html'
-        # else:
+            
+            # set forward type
+            conf_qid[q_id]['forward_type'] = 'internal'
+        else:
+            conf_qid[q_id]['forward_type'] = 'external'
+
         #     # if not forwarding, just set own pass through with study level
         #     conf_qid[q_id]['pass_through_vars'] = study_default_pt_vars 
 
@@ -468,12 +499,16 @@ def expand_shared_params(loaded_config,debug=False):
 @click.option('--fragment',is_flag=True)
 @click.option('-a','--all_in_one',is_flag=True)
 @click.option('-v','--study-pass-through-vars', multiple=True, default=['id'])
+@click.option('-i','--instructions-type', default='forward',
+              type=click.Choice(['log','forward','minimal','blank'],
+                                case_sensitive=False))
               
 def generate_from_configuration(config_file=None,repo_name=None,
                                 gh_org=None,out_url=None,
                                 debug=False, out_rel_path='',
                                 fragment=False,all_in_one=False,
-                                study_pass_through_vars = ['id']):
+                                study_pass_through_vars = ['id'], 
+                                instructions_type='log'):
     '''
     Generate html files from a configuration file
 
@@ -547,7 +582,7 @@ def generate_from_configuration(config_file=None,repo_name=None,
         os.makedirs(out_rel_path)
     
     instructions = [make_question_page(**q, out_url=out_url, out_rel_path=out_rel_path,
-          debug=debug,full_html=not(fragment)) 
+          debug=debug,full_html=not(fragment),instructions_type=instructions_type) 
         for q in parsed_config]
     #  save instructions
     with open(instruction_file, 'w') as f:

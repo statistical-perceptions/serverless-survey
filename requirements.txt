@@ -12,6 +12,6 @@ pyppeteer
 lxml
 sphinx-design
 sphinx-autodoc2
-sphinx-design
+sphinx-click
 myst-parser
 git+https://github.com/brownsarahm/sphinxcontrib-mermaid@cdnupdate

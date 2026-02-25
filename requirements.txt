@@ -1,5 +1,6 @@
 plotly
-sphinx
+sphinx>=8.2
+pydata-sphinx-theme
 numpy
 pandas
 seaborn

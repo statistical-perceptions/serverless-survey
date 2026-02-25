@@ -1,11 +1,11 @@
 plotly
+sphinx
 numpy
 pandas
 seaborn
 scipy
 pyyaml
 markdown
-jupyter-book
 matplotlib
 pyppeteer
 lxml

@@ -10,4 +10,5 @@ matplotlib
 pyppeteer
 lxml
 sphinx-panels
+sphinx-autodoc2
 git+https://github.com/brownsarahm/sphinxcontrib-mermaid@cdnupdate

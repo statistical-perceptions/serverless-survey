@@ -1,4 +1,11 @@
-# Overview
+# Researcher Guide
+
+```{toctree}
+configuration.md
+questions.md
+qualtrics.md
+analysis.md
+```
 
 ## What it does
 

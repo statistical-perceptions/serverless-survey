@@ -10,7 +10,7 @@ markdown
 matplotlib
 pyppeteer
 lxml
-sphinx-panels
+sphinx-design
 sphinx-autodoc2
 myst-parser
 git+https://github.com/brownsarahm/sphinxcontrib-mermaid@cdnupdate

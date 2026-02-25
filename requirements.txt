@@ -12,4 +12,5 @@ pyppeteer
 lxml
 sphinx-panels
 sphinx-autodoc2
+myst-parser
 git+https://github.com/brownsarahm/sphinxcontrib-mermaid@cdnupdate

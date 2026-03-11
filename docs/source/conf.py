@@ -28,7 +28,7 @@ extensions = [
     'sphinx_click',
      
 ]
-# "myst_nb",# duplicate to myst
+
     # 'sphinx.ext.autodoc',
 autodoc2_packages = [
     "../my_package",

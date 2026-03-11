@@ -20,14 +20,15 @@ sys.path.insert(0, os.path.abspath('../../ssbuilder/'))
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    "myst_parser",
+    "myst_nb",
     'autodoc2',
     'sphinx.ext.intersphinx',
     "sphinx_design",
     'sphinx.ext.napoleon',
-    'sphinx_click'
+    'sphinx_click',
+     
 ]
-#  "myst_nb",
+# "myst_nb",# duplicate to myst
     # 'sphinx.ext.autodoc',
 autodoc2_packages = [
     "../my_package",

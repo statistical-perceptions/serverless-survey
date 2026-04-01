@@ -1,6 +1,8 @@
 *.egg-info/
 *.egg-info/
 build/
-docs/_build/
+docs/build/
+docs/source/apidocs/
 docs/.ipynb_checkpoints/
 */__pycache__
+

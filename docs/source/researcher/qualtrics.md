@@ -1,48 +1,56 @@
 # Coordinating with Qualtrics 
 
 
-```{important}
-This is the base documentation that may need updates
-```
-
 ## Basic use
 
-1. the first qualtrics survey sends embedded data via forwarding only
-2. middle ones receive data and send data 
-3. the last one receives data only
+1. A first qualtrics survey sends embedded data via forwarding only
+2. (optional) Middle qualtrics surveys receive data and send data 
+3. The final Qualtrics survey receives data only
+
 
 ### Sending the ID from Qualtrics
 
-1. Add an embedded data block with the identifier to forward (eg panel ID or Response ID)
-2. redirect end of survey to a url
+1. Add an embedded data block with the identifier to forward (eg panelID or Response ID) 
+2. Redirect end of survey to the URL of your stud
 3. embed the response id in the forwarding url:
 
 Template
 ```
-https://statistical-perceptions.github.io/IdentiCurve/<question_out_html_file>.html?id=<qualtrics piped text>
+https://<gh_repo_owner>.github.io/<repo_name>/<question_out_html_file>.html?id=<qualtrics piped text>
 ```
+where: 
+- `<gh_repo_owner>` is the name of the repo owner, i.e. an organization or gh username; if you set up a [custom domain](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site) this and the `.github.io` would be replaced with that. 
+- `<repo_name>` is the name of the repository; 
+- `<question_out_html_file>` comes from your config file choices, for the first question participants should be directed to. 
+- `<qualtrics piped text>` is for whatever you chose as the embedded data above. 
 
-Example
+
+::::{important}
+your github org name (or custom domain) and repo name will be visible to your study participants 
+:::::::
+
+Example:
 
 ```
 https://statistical-perceptions.github.io/sample-nobackend/?id=${e://Field/ResponseID}
 ```
-in this case, I only had one question page so there is no question_id set and I used the ResponseID feild. 
+in this case, `statistical-perceptions` is the owner, `sample-nobackend` is the repo name and the study only has one question page so there is no question_id set and I used the ResponseID feild as the embedded data for the identifier. 
 
-note:
-- if needed, we can pass more than a single unique identifier on, but that requires code changes
 
 
 ### Recieving Data into Qualtrics
 
-1. set up embedded data as the first block on the workflows tab. set the variables as per the instructions output
+1. set up embedded data as the first block on the workflows tab. set the variables as per the instructions output by [getting data from url](https://www.qualtrics.com/support/survey-platform/survey-module/survey-flow/standard-elements/embedded-data/#SettingValuesFromTheSurveyURL)
 2. (if applicable) use piped text to refer to those values in the question text
-3. (optional) add a branch after the embedded data to have people skip the survey "if id is Equal to demo" 
-
-- [getting data from url](https://www.qualtrics.com/support/survey-platform/survey-module/survey-flow/standard-elements/embedded-data/#SettingValuesFromTheSurveyURL)
+3. (optional) add a branch after the embedded data to have people skip the survey "if `id` is Equal to demo" 
 
 
 ### Branching to different ss questions based on qualtrics answers 
+
+::::::{attention}
+survey flow view overrides the end of survey block in the survey
+:::::::
+
 
 1. on the survey flow tab add a branch
 2. set the condition to be based on a question

@@ -31,7 +31,9 @@ extensions = [
 
     # 'sphinx.ext.autodoc',
 autodoc2_packages = [
-    "../my_package",
+   {'path':"../../ssbuilder",
+        # "auto_mode": False,
+        }
 ]
 
 templates_path = ['_templates']

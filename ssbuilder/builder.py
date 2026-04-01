@@ -119,7 +119,11 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
         generate a full html page or if False, generate only a segment of the page (eg for combining or embedding)
     footer_type : string {'confirm_submit','next' }
         type of footer to use 'confirm_submit'  or 'next'
+
+    Returns
     -------
+    instructions : string
+        description of what was done for use in setting up the qualtrics
     
     Notes
     -----

@@ -9,4 +9,5 @@ These documents outline how to use for researchers and for potential contributor
 ```{toctree}
 researcher/index.md
 dev/index.md
+apidocs/index
 ```

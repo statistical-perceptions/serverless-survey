@@ -19,8 +19,49 @@ A configuration file is yaml
 
 ## YAML Format
 
-There are two supported formats for the configuration file
+There are two supported formats for the configuration file:
+- [no shared parameters](#noshare) where all settings for the question are set individually for every question
+- [shared parameters](#shared), where some settings are set once for all questions and applied to all questions. 
 
+
+All yaml files are like: 
+
+```
+key: value
+```
+where:
+- the `key` will be an option name for either building or question type sepecific
+- `value` is your chosen value. 
+- The keys need to be unique. 
+- keys should not have spaces in them, but values can be more complex
+
+Yaml creates lists by starting a line with `- ` an then tabbing over all items that are related. In `ss` our lists have the same structure so each group that starts with `- ` woud have the same keys in it. 
+
+```
+- id: identifier_q1
+  property: val for property in q1 
+- id: identifier_q2
+  property: val for property in q2 
+```
+not that in each group of lines with a `-` the keys are unique but they can repeat in the list. 
+
+
+items can be nested
+```
+item_with_subparts:
+  subpart1: val sub 1
+  subpart2: val sub 2
+```
+
+and long values can go on a new line for readability
+```
+key_with_long_value: |
+  long value first line
+  long value second line
+  long value third line
+```
+
+(noshare)=
 ### No shared parameters 
 
 
@@ -53,7 +94,7 @@ Notes:
 
 Some come from the question and others are for the pate
 
-
+(shared)=
 ### Shared parameters 
 
 To share values across question it can be set up so that the top level is a single entry with two keys (`shared` and `unique`) where the `shared` key includes the parameter values that are to be applied to all questiona and `unique` includes a list defining individiual questions as above.  Any values defined in both, the `unique` will overwrite the `shared` value.  
@@ -96,11 +137,13 @@ This is equivalent to (but, for large number of questions,  more compact than):
     name_of_fig_var1_for_q2: value_for_fig_var1_for_q2
 ```
 
-## Configuring your study 
+## Configuration Options
 
-To configure the study you will need the urls to each follow-up survey. They do not have to be fully configured first though. 
+::::{attention} Prerequisite
+To configure the study you will need the urls to each follow-up survey. They do not have to be fully configured, but you need to create them so that you can get the URL for each.  
+::::::
 
-Each question is a single page with a figure on it. 
+Each question is a single page with a figure on it. There are some configurations to the overall page and some for the plot itself. 
 
 ### Page level  Settings
 
@@ -115,9 +158,9 @@ from IPython.display import Markdown
 Markdown(ssbuilder.md_params(ssbuilder.builder.make_question_page))
 ```
 
-```{warning}
+:::{warning}
 You cannot use `end` as a question ID, or `end.html` as an output file name
-```
+::::
 
 ### Question Text
 

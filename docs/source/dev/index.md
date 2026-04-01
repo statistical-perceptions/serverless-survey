@@ -6,4 +6,5 @@
 ```{toctree}
 configuration.md
 questions.md
+build.md
 ```

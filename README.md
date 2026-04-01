@@ -4,7 +4,7 @@ This package is designed to build data visualizations as survey questions withou
 
 ## For Survey Building Researchers
 
-In this case start from the documentation and use the [ss-template](template) repo to get started. 
+In this case start from the documentation and use the [ss-template](https://github.com/statistical-perceptions/ss-template) repo to get started. 
 
 ## Running without clone
 
@@ -32,4 +32,3 @@ Statistical Perceptions, for our joint project.
 
 You may request features or report bugs on the issues tab.  These will be triaged, but development will remain driven by our research goals, however collaboration and contributions are welcome and we will review PRs accordingly. 
 
-[sstemplate]:https://github.com/statistical-perceptions/ss-template

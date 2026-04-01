@@ -5,6 +5,7 @@ import pandas as pd
 def md_params(function):
     '''
     return a markdown list of the parameters from an object with numpydoc style docstring
+    used in documentation
     
     Parameters
     ----------

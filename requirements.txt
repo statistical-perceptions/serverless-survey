@@ -9,6 +9,7 @@ pyyaml
 markdown
 matplotlib
 pyppeteer
+myst-nb
 lxml
 sphinx-design
 sphinx-autodoc2

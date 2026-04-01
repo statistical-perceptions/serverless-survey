@@ -269,6 +269,9 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     else:
         out_path = out_html_file
 
+    # Ensure any intermediate directories exist (e.g. when pretty_url=True)
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+
     # Write the page
     with open(out_path, 'w') as f:
         f.write(page_html)

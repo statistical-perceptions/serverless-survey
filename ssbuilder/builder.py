@@ -1,15 +1,17 @@
 import os
+import logging
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 from plotly.subplots import make_subplots
 import numpy as np
 from scipy.stats import norm
-import click
 import yaml
 import markdown
 from copy import deepcopy
 from importlib.resources import files
+
+logger = logging.getLogger(__name__)
 
 # import plot functions here 
 from .single_normal_curve import NormalCurveSlider
@@ -126,7 +128,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     variables with _var_name + "id" will be passed to qualtrics
     '''
     if debug:
-        click.echo('building page')
+        logger.debug('building page')
     # validate the question id done into something that can work
     question_id = question_id.replace('/', '').replace(' ', '-').lower()
 
@@ -171,8 +173,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     question_form_html = question_form_template.format(**logging_vars)
 
     if debug:
-        click.echo(out_html_file)
-        click.echo(pass_through_vars)
+        logger.debug(out_html_file)
+        logger.debug(pass_through_vars)
     # pass through vars
     pass_through_template_html = load_template_file('question_form_elements','pass_through_var.html')
 
@@ -191,17 +193,17 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
         '\n\n'.join([''] + pass_through_html)
 
     if debug:
-        click.echo('working on js pass through')
-        click.echo(pass_through_template_js)
-        click.echo(pass_through_vars_sorted)
-    
+        logger.debug('working on js pass through')
+        logger.debug(pass_through_template_js)
+        logger.debug(pass_through_vars_sorted)
+
     pass_through_js_list = [pass_through_template_js.format(pass_var_name=ptvar)  for ptvar in pass_through_vars_sorted]
     pass_through_js =  '\n'.join([''] + pass_through_js_list)
-    
+
     if debug:
-        click.echo(pass_through_js)
-        click.echo('js for parse ')
-        click.echo(type(pass_through_js))
+        logger.debug(pass_through_js)
+        logger.debug('js for parse ')
+        logger.debug(type(pass_through_js))
 
 
 
@@ -220,7 +222,7 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
     footer_html = footer_template.format(**footer_vars)
 
     if debug:
-        click.echo('footder done')
+        logger.debug('footer done')
 
     
     # load and fill in logging js
@@ -245,8 +247,8 @@ def make_question_page(question_id, figure_type='NormalCurveSlider', figure_valu
                  'plot_html': plot_html,
                  'footer_html':footer_html,
                  'plot_logging_js': plot_logging_js}
-    if debug: 
-        click.echo(page_info)
+    if debug:
+        logger.debug(page_info)
         
     if full_html:
         page_template = load_template_file('page.html')
@@ -307,7 +309,7 @@ def set_pass_through(config_dict_list,
         list of variables that all questions pass through
     '''
     if debug:
-        click.echo('pass through')
+        logger.debug('pass through')
     
     # note in this function we rely on that dictionaries are not copied
     # set question_id as keys for better indexing
@@ -353,16 +355,16 @@ def set_pass_through(config_dict_list,
 
         if debug:
             if 'pass_through_vars' in conf_qid[q_id]:
-                click.echo('preset ptv on')
-                click.echo(q_id)
-                click.echo(conf_qid[q_id]['pass_through_vars'])
+                logger.debug('preset ptv on')
+                logger.debug(q_id)
+                logger.debug(conf_qid[q_id]['pass_through_vars'])
 
         # check if its an id, an internal forward
         if next_question in question_ids:
             if debug:
-                click.echo(q_id)
-                click.echo('forwards to ')
-                click.echo(next_question)
+                logger.debug(q_id)
+                logger.debug('forwards to ')
+                logger.debug(next_question)
             # extract pass through vars and confirm if needed
             if conf_qid[q_id]['logging_vars']:
                 cur_question_vars = list(conf_qid[q_id]['logging_vars'].values())
@@ -377,25 +379,25 @@ def set_pass_through(config_dict_list,
                 # append current pass throughs if they exist
                 if 'pass_through_vars' in conf_qid[q_id]:
                     if debug:
-                        click.echo(q_id)
-                        click.echo('adding cur vars to pass on next q')
+                        logger.debug(q_id)
+                        logger.debug('adding cur vars to pass on next q')
                     
                     cur_q_vars += conf_qid[q_id]['pass_through_vars']
                 # add append or create passthrough vars key
                 if 'pass_through_vars' in conf_qid[next_question]:
                     if debug:
-                        click.echo('append ptv ')
-                        click.echo(study_default_pt_vars)
-                        click.echo(cur_q_vars)
-                        click.echo(next_question)
+                        logger.debug('append ptv ')
+                        logger.debug(study_default_pt_vars)
+                        logger.debug(cur_q_vars)
+                        logger.debug(next_question)
                     # appnd
                     next_pass_through = conf_qid[next_question]['pass_through_vars'] + cur_q_vars
-                else: 
+                else:
                     if debug:
-                        click.echo('set ptv ')
-                        click.echo(study_default_pt_vars)
-                        click.echo(cur_q_vars)
-                        click.echo(next_question)
+                        logger.debug('set ptv ')
+                        logger.debug(study_default_pt_vars)
+                        logger.debug(cur_q_vars)
+                        logger.debug(next_question)
                     # setup
                     next_pass_through = study_default_pt_vars + cur_q_vars
 
@@ -493,19 +495,6 @@ def expand_shared_params(loaded_config,debug=False):
     return full_config
 
 
-@click.command()
-@click.option('-f','--config-file')
-@click.option('-p', '--out_rel_path')
-@click.option('-r','--repo_name')
-@click.option('-o','--gh_org')
-@click.option('-d','--debug',is_flag=True)
-@click.option('--fragment',is_flag=True)
-@click.option('-a','--all_in_one',is_flag=True)
-@click.option('-v','--study-pass-through-vars', multiple=True, default=['id'])
-@click.option('-i','--instructions-type', default='forward',
-              type=click.Choice(['log','forward','minimal','blank'],
-                                case_sensitive=False))
-              
 def generate_from_configuration(config_file=None,repo_name=None,
                                 gh_org=None,out_url=None,
                                 debug=False, out_rel_path='',
@@ -616,20 +605,28 @@ def generate_from_configuration(config_file=None,repo_name=None,
         with open(os.path.join(out_rel_path, 'aio.html'),'w') as f:
             f.write(page)
 
-@click.command()
-@click.option('-f','--config-file')
-@click.option('-m','--metadata',multiple=True,default = None)
-              
-def question_csv(config_file=None,metadata=None,debug=False):
+def question_csv(config_file=None, metadata=None):
     '''
+    Export question metadata from a configuration file to CSV.
+
+    Parameters
+    ----------
+    config_file : string
+        path to YAML configuration file
+    metadata : list of strings or None
+        metadata fields to include as extra columns
+
+    Returns
+    -------
+    csv_file_name : string
+        path of the written CSV file
     '''
-    # --------------  load and parse the configurations
     with open(config_file, 'r') as f:
         loaded_config = yaml.load(f, Loader=yaml.Loader)
 
-    full_config = expand_shared_params(loaded_config,debug)
+    full_config = expand_shared_params(loaded_config)
 
-    base_attrs = ['question_id','question_text']
+    base_attrs = ['question_id', 'question_text']
     if metadata:
         out_cols = base_attrs + list(metadata)
         data = [[q[a] for a in base_attrs] + [q['metadata'][ma] for ma in metadata] for q in full_config]
@@ -637,9 +634,7 @@ def question_csv(config_file=None,metadata=None,debug=False):
         out_cols = base_attrs
         data = [[q[a] for a in base_attrs] for q in full_config]
 
-    df = pd.DataFrame(data =data, columns = out_cols)
-    click.echo('Created DataFrame with shape ' + str(df.shape))
-
+    df = pd.DataFrame(data=data, columns=out_cols)
     csv_file_name = config_file.split('.')[0] + '.csv'
     df.to_csv(csv_file_name)
-    click.echo('wrote out ' + csv_file_name )
+    return csv_file_name
